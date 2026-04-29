@@ -35,50 +35,84 @@
   <!-- ── Main ── -->
   <main class="main">
 
-    <!-- ── Step 1: Platform Selector ── -->
-    <section class="section" id="step-platform">
-      <div class="step-label"><span class="step-num">01</span> Choose Orientations</div>
-      <p class="section-sub">Select your target formats. YouTube is default.</p>
-      <div class="platform-grid-large" id="platformGrid">
-
-        <button class="platform-card-large active" data-platform="landscape">
-          <div class="card-large-body">
-            <span class="card-title">YouTube video</span>
-            <span class="card-res">1920 × 1080</span>
-            <span class="card-label">Landscape</span>
-            <span class="card-desc">Full beat</span>
-          </div>
-          <div class="multi-check"></div>
-        </button>
-
-        <button class="platform-card-large" data-platform="portrait">
-          <div class="card-large-body">
-            <span class="card-title">Social Media Content</span>
-            <span class="card-res">1080 × 1920</span>
-            <span class="card-label">Portrait</span>
-            <span class="card-desc">30 seconds cut</span>
-          </div>
-          <div class="multi-check"></div>
-        </button>
-
+    <!-- ── Step 1: Media Ingestion ── -->
+    <section class="section" id="step-upload">
+      <div class="step-label"><span class="step-num">01</span> Upload Media</div>
+      <p class="section-sub">Drop your beat and artwork below.</p>
+      <div class="upload-zone-v2">
+        <div class="upload-card" id="audio-upload">
+          <div class="upload-icon">🎵</div>
+          <div class="upload-text">Select Audio</div>
+          <div class="upload-filename" id="audio-filename">No file selected</div>
+        </div>
+        <div class="upload-card" id="image-upload">
+          <div class="upload-icon">🖼️</div>
+          <div class="upload-text">Select Artwork</div>
+          <div class="upload-filename" id="image-filename">No file selected</div>
+        </div>
       </div>
     </section>
 
-    <!-- ── Step 2: Beat List ── -->
-    <section class="section" id="step-beats">
-      <div class="step-label"><span class="step-num">02</span> Upload Beat List</div>
-      <p class="section-sub">Limit: 10 beats. Add each beat and its respective image/gif below.</p>
+    <!-- ── Step 2: Format & Preset ── -->
+    <section class="section" id="step-config">
+      <div class="step-label"><span class="step-num">02</span> Visual Configuration</div>
+      
+      <div class="config-grid">
+        <!-- Platform -->
+        <div class="config-group">
+          <label class="config-label">Output Format</label>
+          <div class="toggle-group" id="format-toggle">
+            <button class="toggle-btn active" data-value="youtube">YouTube (16:9)</button>
+            <button class="toggle-btn" data-value="portrait">Shorts/Reels (9:16)</button>
+          </div>
+        </div>
 
-      <div class="pairs-list" id="pairsList">
-        <!-- Beat rows injected here by JS -->
+        <!-- Presets -->
+        <div class="config-group">
+          <label class="config-label">Visual Preset</label>
+          <div class="preset-grid" id="preset-selector">
+            <button class="preset-card active" data-preset="ambient_drift">
+              <div class="preset-name">Ambient Drift</div>
+              <div class="preset-desc">Dreamy & Slow</div>
+            </button>
+            <button class="preset-card" data-preset="trap_pulse">
+              <div class="preset-name">Trap Pulse</div>
+              <div class="preset-desc">Beat-Synced Scale</div>
+            </button>
+            <button class="preset-card" data-preset="cinematic_fade">
+              <div class="preset-name">Cinematic Fade</div>
+              <div class="preset-desc">Moody & Professional</div>
+            </button>
+            <button class="preset-card" data-preset="afro_glow">
+              <div class="preset-name">Afro Glow</div>
+              <div class="preset-desc">Warm & Vibrant</div>
+            </button>
+            <button class="preset-card" data-preset="hard_cut_energy">
+              <div class="preset-name">Hard Cut</div>
+              <div class="preset-desc">Aggressive Shake</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Intensity & Duration -->
+        <div class="config-row">
+          <div class="config-group">
+            <label class="config-label">Visual Intensity</label>
+            <select class="v2-select" id="intensity-select">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="config-group">
+            <label class="config-label">Render Duration</label>
+            <div class="toggle-group" id="duration-toggle">
+              <button class="toggle-btn active" data-value="full">Full Track</button>
+              <button class="toggle-btn" data-value="30s">30s Clip</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <button class="add-btn" id="addBeatBtn">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Add Another Beat
-      </button>
     </section>
 
     <!-- ── Render Action ── -->
@@ -86,11 +120,14 @@
       <button class="render-btn" id="renderBtn" disabled>
         <div class="render-btn-inner">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>
-          Render All Videos
+          Initialize v2 Render
         </div>
       </button>
       <div class="render-info">
-        <p class="render-hint" id="renderHint">Add at least one beat pair to render</p>
+        <p class="render-hint" id="renderHint">Complete Step 01 to begin</p>
+        <div class="render-progress-bar" id="render-progress-container" style="display:none">
+          <div class="render-progress-fill" id="render-progress-fill"></div>
+        </div>
         <p class="render-eta" id="renderEta"></p>
       </div>
     </section>
@@ -102,7 +139,7 @@
       <!-- NEW: SYSTEM MONITORING DASHBOARD -->
       <div id="system-dashboard" class="collapsible-panel" style="margin-top: 50px; border-top: 1px solid #333; padding-top: 20px;">
           <div class="step-label" style="display: flex; align-items: center; gap: 10px;">
-              <span style="color: #00ff00;">●</span> SYSTEM HEALTH <span id="engine-version-tag" style="font-size: 0.6rem; opacity: 0.5;">v1.1.0-hardened</span>
+              <span style="color: #00ff00;">●</span> SYSTEM HEALTH <span id="engine-version-tag" style="font-size: 0.6rem; opacity: 0.5;">v2.0.0-simplified</span>
           </div>
           
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 15px;">
@@ -141,6 +178,6 @@
   <input type="file" id="globalAudioInput" accept=".mp3,.wav,.aiff,.m4a" multiple style="display:none" />
   <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" style="display:none" />
 
-  <script src="/static/app.js?v=1.3"></script>
+  <script src="/static/app.js?v=2.0"></script>
 </body>
 </html>

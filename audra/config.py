@@ -1,6 +1,6 @@
 import os
 
-ENGINE_VERSION = "v1.1.0-hardened"
+ENGINE_VERSION = "v2.0.1-stable"
 
 # --- Security & Limits ---
 MAX_FILE_SIZE_MB = 100
@@ -9,7 +9,7 @@ ALLOWED_EXTENSIONS_IMAGE = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 
 # --- Paths ---
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ROOT_DIR = os.path.dirname(BASE_DIR)
+ROOT_DIR = BASE_DIR
 INPUT_DIR = os.path.join(ROOT_DIR, 'input')
 OUTPUT_DIR = os.path.join(ROOT_DIR, 'output')
 

@@ -18,3 +18,5 @@ output/*
 # IDEs
 .vscode/
 .idea/
+*.log
+test_render*.mp4

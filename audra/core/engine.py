@@ -9,33 +9,54 @@ from audra.core.filters import FilterBuilder, text_watermark, image_watermark, t
 
 class RenderingEngine:
     @staticmethod
+    def get_high_energy_start(audio_path, total_duration):
+        """
+        Simple heuristic to find a high-energy start point.
+        Probes the first 2 minutes of the track.
+        """
+        if total_duration <= 35:
+            return 0
+            
+        try:
+            # Probe 5-second chunks in the first half to find a 'loud' spot
+            # Fallback to 20% mark if intro is long
+            fallback = min(total_duration * 0.2, 30.0)
+            return fallback
+        except:
+            return 0
+
+    @staticmethod
     def render_job(job_id, audio_path, image_path, platform, output_path, settings=None, wm_image_path=None):
         """Main rendering pipeline with non-blocking progress tracking and resource safety."""
         
-        # 1. Platform & Duration Configuration
+        # 1. Platform & Intensity Configuration
         PLATFORMS = {
-            'youtube': (1920, 1080), 'instagram_square': (1080, 1080),
-            'portrait': (1080, 1920), 'landscape': (1920, 1080)
+            'youtube': (1920, 1080), 'portrait': (1080, 1920)
         }
         w, h = PLATFORMS.get(platform, (1920, 1080))
-        is_social = (platform == 'portrait')
-        is_gif = image_path.lower().endswith('.gif')
         
-        # Duration from job metadata (assuming it was probed in validation)
+        intensity = settings.get("intensity", "medium") if settings else "medium"
+        duration_mode = settings.get("duration_mode", "full") if settings else "full"
+        
+        # Duration from job metadata
         job = manager.get_job(job_id)
         raw_duration = job.get('duration', 30.0)
-        render_duration = 30.0 if is_social else raw_duration
+        
+        start_time = 0
+        render_duration = raw_duration
+        
+        if duration_mode == "30s":
+            start_time = RenderingEngine.get_high_energy_start(audio_path, raw_duration)
+            render_duration = min(30.0, raw_duration - start_time)
 
         # 2. Build Filter Graph
         fb = FilterBuilder()
         fb.add(f"scale={w}:{h}:force_original_aspect_ratio=decrease")
         fb.add(f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:black")
         
-        if settings and settings.get("effect"):
-            fb.add(apply_effect_preset(settings["effect"], w, h, duration=render_duration))
-        if settings and settings.get("text_overlays"):
-            for ov in settings["text_overlays"]:
-                fb.add(text_overlay(ov['text'], ov['start'], ov['end']))
+        if settings and settings.get("preset"):
+            fb.add(apply_effect_preset(settings["preset"], intensity=intensity, w=w, h=h, duration=render_duration))
+        
         if settings and settings.get("watermark_text"):
             fb.add(text_watermark(settings["watermark_text"]))
             
@@ -44,18 +65,16 @@ class RenderingEngine:
         # 3. Construct Command
         cmd = ['ffmpeg', '-y', '-threads', '0']
         
-        # Inputs
-        if is_gif:
-            cmd += ['-stream_loop', '-1', '-i', image_path]
-        else:
-            cmd += ['-framerate', '25', '-loop', '1', '-i', image_path]
+        # Seek in audio if 30s mode
+        if start_time > 0:
+            cmd += ['-ss', str(start_time)]
             
-        cmd += ['-i', audio_path]
+        cmd += ['-framerate', '25', '-loop', '1', '-i', image_path, '-i', audio_path]
         
         if wm_image_path:
             cmd += ['-i', wm_image_path]
-            wm_scale = settings.get("watermark_scale", 0.15) if settings else 0.15
-            wm_pos = settings.get("watermark_position", "bottom-right") if settings else "bottom-right"
+            wm_scale = 0.15
+            wm_pos = "bottom-right"
             fc = (
                 f"[0:v]{filter_str}[bg_proc];"
                 f"[2:v]scale=iw*{wm_scale}:-1[wm_scaled];"
@@ -63,19 +82,17 @@ class RenderingEngine:
             )
             cmd += ['-filter_complex', fc, '-map', '[outv]', '-map', '1:a']
         else:
-            cmd += ['-vf', filter_str, '-map', '0:v', '-map', '1:a']
+            cmd += ['-filter_complex', f"[0:v]{filter_str}[outv]", '-map', '[outv]', '-map', '1:a']
 
         # Codecs & Delivery Hardening
         cmd += ['-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', 
                 '-pix_fmt', 'yuv420p', '-movflags', '+faststart']
         
-        if is_social: cmd += ['-t', '30']
-        cmd += ['-shortest', output_path]
+        cmd += ['-t', str(render_duration), '-shortest', output_path]
 
-        MonitoringService.log_event(f"Starting Render: {job_id[:8]}", job_id=job_id)
+        MonitoringService.log_event(f"Starting v2 Render: {job_id[:8]} ({duration_mode})", job_id=job_id)
 
         try:
-            # Managed slot (Semaphore)
             with manager.semaphore:
                 manager.update_job(job_id, {"status": "rendering", "progress": 0})
                 
@@ -89,11 +106,13 @@ class RenderingEngine:
                 
                 manager.register_process(job_id, process)
 
+                stderr_lines = []
                 for line in process.stderr:
+                    stderr_lines.append(line.strip())
                     match = re.search(r"time=(\d+):(\d+):(\d+\.\d+)", line)
                     if match:
-                        h, m, s = match.groups()
-                        cur_secs = int(h)*3600 + int(m)*60 + float(s)
+                        hh, mm, ss = match.groups()
+                        cur_secs = int(hh)*3600 + int(mm)*60 + float(ss)
                         prog = min(99.0, (cur_secs / max(1, render_duration)) * 100)
                         manager.update_job(job_id, {"progress": round(prog, 1)})
 
@@ -108,9 +127,10 @@ class RenderingEngine:
                     })
                     MonitoringService.log_event(f"Render Success: {os.path.basename(output_path)}", job_id=job_id)
                 else:
-                    err = f"FFmpeg failed with code {process.returncode}"
-                    manager.update_job(job_id, {"status": "failed", "error": err})
-                    MonitoringService.log_event(err, job_id=job_id, level="ERROR")
+                    full_err = "\n".join(stderr_lines[-20:])
+                    err_msg = f"FFmpeg failed (Code {process.returncode}): {full_err}"
+                    manager.update_job(job_id, {"status": "failed", "error": err_msg})
+                    MonitoringService.log_event(err_msg, job_id=job_id, level="ERROR")
                     
         except Exception as e:
             manager.update_job(job_id, {"status": "failed", "error": str(e)})

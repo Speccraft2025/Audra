@@ -78,28 +78,79 @@ def text_overlay(text, start, end, position="center", fontsize=48):
     )
 
 
-def apply_effect_preset(preset_name, w=1920, h=1080, duration=0):
+def apply_effect_preset(preset_name, intensity="medium", w=1920, h=1080, duration=0):
     """
-    Returns a filter string for a predefined visual effect preset.
-    duration: Total duration of the audio in seconds.
+    Returns a filter string for Audra v2 visual presets.
+    intensity: "low", "medium", or "high"
     """
-    if preset_name == "clean":
-        return ""
+    intensity = intensity.lower()
     
-    elif preset_name == "zoom_slow":
-        # Slow zoom in effect (0.05% per frame)
-        return f"zoompan=z='min(zoom+0.0005,1.5)':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}"
-    
-    elif preset_name == "fade_in_out":
-        # Only fade out if we have a valid duration
-        fade_in = "fade=t=in:st=0:d=1.5"
-        if duration > 1.5:
-            fade_out = f"fade=t=out:st={duration-1.5}:d=1.5"
-            return f"{fade_in},{fade_out}"
-        return fade_in
-    
-    elif preset_name == "vibrant":
-        # Increase saturation and slightly boost contrast
-        return "eq=saturation=1.5:contrast=1.1:brightness=0.02"
-    
+    # Mapping intensity to numerical values
+    lv = {"low": 1, "medium": 2, "high": 3}.get(intensity, 2)
+
+    if preset_name == "ambient_drift":
+        # Scale up slightly and drift the crop window
+        drift = 0.05 * lv
+        filters = [
+            "format=yuv420p",
+            f"scale=w=iw*1.1:h=-1", # Static scale
+            f"crop={w}:{h}:(iw-{w})/2+{drift}*20*sin(t/2):(ih-{h})/2+{drift}*20*cos(t/2)",
+            f"vignette=angle={0.1 * lv}"
+        ]
+        if lv >= 2:
+            filters.append("curves=preset=vintage")
+        return ",".join(filters)
+
+    elif preset_name == "trap_pulse":
+        # Use zoompan with 'time' for pulsing to keep output resolution constant
+        pulse = 0.03 * lv
+        filters = [
+            "format=yuv420p",
+            f"scale={w}:{h}",
+            f"zoompan=z='1.05+{pulse}*sin(time*2*PI*2)':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}",
+            f"eq=contrast={1.1 + (0.1 * lv)}:saturation={1.3 + (0.1 * lv)}"
+        ]
+        if lv == 3:
+            filters.append("noise=alls=10:allf=t+u")
+        return ",".join(filters)
+
+    elif preset_name == "cinematic_fade":
+        # Very slow drift
+        filters = [
+            "format=yuv420p",
+            f"scale=w=iw*1.05:h=-1",
+            f"crop={w}:{h}:(iw-{w})/2+10*sin(t/4):(ih-{h})/2+10*cos(t/4)",
+            f"eq=contrast={1.1}:saturation={0.8}:brightness=-0.02",
+            f"vignette=angle={0.2 * lv}"
+        ]
+        if duration > 2:
+            filters.append(f"fade=t=in:st=0:d=1.5,fade=t=out:st={duration-1.5}:d=1.5")
+        return ",".join(filters)
+
+    elif preset_name == "afro_glow":
+        # Gentle breathing using zoompan
+        filters = [
+            "format=yuv420p",
+            f"scale={w}:{h}",
+            f"zoompan=z='1.03+0.02*sin(time)':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}",
+            f"eq=brightness=0.03:contrast=1.1:saturation={1.4 + (0.1 * lv)}",
+            f"colorbalance=rs={0.08 * lv}:gs={0.04 * lv}:bs=-{0.08 * lv}"
+        ]
+        if lv >= 2:
+            filters.append("unsharp=5:5:1.0:5:5:0.0")
+        return ",".join(filters)
+
+    elif preset_name == "hard_cut_energy":
+        # High-freq jitter
+        shake = 10 * lv
+        filters = [
+            "format=yuv420p",
+            f"scale=w=iw*1.1:h=-1",
+            f"crop={w}:{h}:(iw-{w})/2+{shake}*sin(20*t):(ih-{h})/2+{shake}*cos(20*t)",
+            f"eq=contrast={1.3 + (0.1 * lv)}:brightness=0.03"
+        ]
+        if lv >= 2:
+            filters.append("noise=c0s=15:c0f=t+u")
+        return ",".join(filters)
+
     return ""

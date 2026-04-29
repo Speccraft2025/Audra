@@ -59,33 +59,45 @@ def process():
             # Cleanup and fail
             return jsonify({"error": audio_meta, "file": audio_file.filename}), 400
 
-        # 3. Create Jobs for each platform
+        # 3. Create Jobs for each platform/duration combination
+        platforms_raw = request.form.get(f'platforms_{i}', 'youtube')
+        platforms = [p.strip() for p in platforms_raw.split(',') if p.strip()]
+        
+        durations_raw = request.form.get(f'durations_{i}', 'full')
+        durations = [d.strip() for d in durations_raw.split(',') if d.strip()]
+
         for platform in platforms:
-            job_id = str(uuid.uuid4())
-            
-            job_data = {
-                'id': job_id,
-                'name': audio_file.filename,
-                'platform': platform,
-                'status': 'queued',
-                'progress': 0,
-                'duration': audio_meta['duration'],
-                'pair_id': pair_uuid,
-                'engine_version': config.ENGINE_VERSION
-            }
-            
-            manager.add_job(job_data)
-            
-            # Start rendering thread (Managed by Semaphore inside manager)
-            t = threading.Thread(
-                target=RenderingEngine.render_job,
-                args=(job_id, repaired_audio, master_image_path, platform, 
-                      os.path.join(config.OUTPUT_DIR, f"{job_id}.mp4"), 
-                      settings, master_wm_path),
-                daemon=True
-            )
-            t.start()
-            created_jobs.append(job_id)
+            for duration_mode in durations:
+                job_id = str(uuid.uuid4())
+                
+                # Create a job-specific settings copy to override duration_mode
+                job_settings = settings.copy()
+                job_settings['duration_mode'] = duration_mode
+                
+                job_data = {
+                    'id': job_id,
+                    'name': audio_file.filename,
+                    'platform': platform,
+                    'duration_mode': duration_mode,
+                    'status': 'queued',
+                    'progress': 0,
+                    'duration': audio_meta['duration'],
+                    'pair_id': pair_uuid,
+                    'engine_version': config.ENGINE_VERSION
+                }
+                
+                manager.add_job(job_data)
+                
+                # Start rendering thread
+                t = threading.Thread(
+                    target=RenderingEngine.render_job,
+                    args=(job_id, repaired_audio, master_image_path, platform, 
+                          os.path.join(config.OUTPUT_DIR, f"{job_id}.mp4"), 
+                          job_settings, master_wm_path),
+                    daemon=True
+                )
+                t.start()
+                created_jobs.append(job_id)
         
         i += 1
         
