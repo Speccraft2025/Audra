@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="u1F733" format="2">
+  <advance width="978"/>
+  <unicode hex="1F733"/>
+  <outline>
+    <contour>
+      <point x="797" y="0" type="curve"/>
+      <point x="953" y="0" type="line"/>
+      <point x="952" y="282"/>
+      <point x="717" y="453"/>
+      <point x="488" y="453" type="curve"/>
+      <point x="257" y="453"/>
+      <point x="26" y="282"/>
+      <point x="25" y="0" type="curve"/>
+      <point x="181" y="0" type="line"/>
+      <point x="182" y="185"/>
+      <point x="330" y="303"/>
+      <point x="488" y="303" type="curve"/>
+      <point x="646" y="303"/>
+      <point x="796" y="185"/>
+    </contour>
+    <component base="_part.ring" xOffset="322" yOffset="-559"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-27 20:44:33 +0000</string>
+    </dict>
+  </lib>
+</glyph>

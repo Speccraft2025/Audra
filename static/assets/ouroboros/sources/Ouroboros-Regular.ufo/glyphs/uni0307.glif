@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni0307" format="2">
+  <advance width="0"/>
+  <unicode hex="0307"/>
+  <anchor x="63" y="500" name="_top"/>
+  <anchor x="63" y="710" name="top"/>
+  <outline>
+    <contour>
+      <point x="116" y="608" type="curve"/>
+      <point x="116" y="637"/>
+      <point x="92" y="660"/>
+      <point x="63" y="660" type="curve"/>
+      <point x="34" y="660"/>
+      <point x="10" y="637"/>
+      <point x="10" y="608" type="curve"/>
+      <point x="10" y="578"/>
+      <point x="34" y="555"/>
+      <point x="63" y="555" type="curve"/>
+      <point x="92" y="555"/>
+      <point x="116" y="578"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2018-10-02 17:40:01 +0000</string>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="z.ss01" format="2">
+  <advance width="694"/>
+  <outline>
+    <contour>
+      <point x="684" y="470" type="curve"/>
+      <point x="684" y="499" type="line"/>
+      <point x="10" y="499" type="line"/>
+      <point x="50" y="161" type="line"/>
+      <point x="50" y="161"/>
+      <point x="50" y="161"/>
+      <point x="79" y="161" type="curve"/>
+      <point x="79" y="253"/>
+      <point x="104" y="411"/>
+      <point x="211" y="411" type="curve"/>
+      <point x="248" y="411"/>
+      <point x="281" y="390"/>
+      <point x="281" y="340" type="curve"/>
+      <point x="281" y="112"/>
+      <point x="90" y="29"/>
+      <point x="10" y="29" type="curve"/>
+      <point x="10" y="0" type="line"/>
+      <point x="678" y="0" type="line"/>
+      <point x="644" y="338" type="line"/>
+      <point x="644" y="338"/>
+      <point x="644" y="338"/>
+      <point x="615" y="338" type="curve"/>
+      <point x="615" y="246"/>
+      <point x="590" y="88"/>
+      <point x="483" y="88" type="curve"/>
+      <point x="446" y="88"/>
+      <point x="413" y="109"/>
+      <point x="413" y="159" type="curve"/>
+      <point x="413" y="387"/>
+      <point x="604" y="470"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2018-10-21 12:04:05 +0000</string>
+    </dict>
+  </lib>
+</glyph>

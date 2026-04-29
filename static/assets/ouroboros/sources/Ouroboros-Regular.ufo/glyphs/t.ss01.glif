@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="t.ss01" format="2">
+  <advance width="414"/>
+  <anchor x="357" y="10" name="bottom"/>
+  <anchor x="207" y="250" name="center"/>
+  <anchor x="181" y="670" name="top"/>
+  <anchor x="394" y="500" name="topright"/>
+  <outline>
+    <contour>
+      <point x="375" y="550" type="line"/>
+      <point x="375" y="550"/>
+      <point x="375" y="500"/>
+      <point x="265" y="500" type="curve"/>
+      <point x="265" y="507"/>
+      <point x="265" y="536"/>
+      <point x="265" y="545" type="curve"/>
+      <point x="265" y="641"/>
+      <point x="354" y="641"/>
+      <point x="354" y="641" type="curve"/>
+      <point x="354" y="670" type="line"/>
+      <point x="182" y="670" type="line"/>
+      <point x="20" y="670" type="line"/>
+      <point x="20" y="641" type="line"/>
+      <point x="20" y="641"/>
+      <point x="98" y="634"/>
+      <point x="98" y="545" type="curve"/>
+      <point x="98" y="539"/>
+      <point x="98" y="505"/>
+      <point x="98" y="500" type="curve"/>
+      <point x="39" y="500"/>
+      <point x="39" y="550"/>
+      <point x="39" y="550" type="curve"/>
+      <point x="10" y="550" type="line"/>
+      <point x="10" y="340" type="line"/>
+      <point x="39" y="340" type="line"/>
+      <point x="39" y="340"/>
+      <point x="39" y="388"/>
+      <point x="98" y="388" type="curve"/>
+      <point x="98" y="362"/>
+      <point x="98" y="344"/>
+      <point x="98" y="320" type="curve"/>
+      <point x="98" y="0"/>
+      <point x="306" y="0"/>
+      <point x="404" y="0" type="curve"/>
+      <point x="404" y="29" type="line"/>
+      <point x="404" y="29"/>
+      <point x="266" y="29"/>
+      <point x="266" y="350" type="curve"/>
+      <point x="266" y="374"/>
+      <point x="266" y="371"/>
+      <point x="266" y="391" type="curve"/>
+      <point x="375" y="391"/>
+      <point x="375" y="340"/>
+      <point x="375" y="340" type="curve"/>
+      <point x="404" y="340" type="line"/>
+      <point x="404" y="550" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2018-10-21 12:27:17 +0000</string>
+    </dict>
+  </lib>
+</glyph>

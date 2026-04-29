@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+audra.log
+
+# System
+.DS_Store
+
+# Audra Data (Keep directories, ignore contents)
+input/*
+!input/.gitkeep
+output/*
+!output/.gitkeep
+
+# IDEs
+.vscode/
+.idea/

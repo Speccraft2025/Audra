@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni0327.case" format="2">
+  <advance width="0"/>
+  <anchor x="157" y="0" name="_bottom"/>
+  <anchor x="107" y="-212" name="bottom"/>
+  <outline>
+    <contour>
+      <point x="105" y="-63" type="curve"/>
+      <point x="98" y="-63"/>
+      <point x="92" y="-63"/>
+      <point x="87" y="-64" type="curve"/>
+      <point x="143" y="41" type="line"/>
+      <point x="52" y="41" type="line"/>
+      <point x="10" y="-114" type="line"/>
+      <point x="19" y="-123" type="line"/>
+      <point x="19" y="-123"/>
+      <point x="37" y="-94"/>
+      <point x="82" y="-94" type="curve"/>
+      <point x="117" y="-94"/>
+      <point x="138" y="-110"/>
+      <point x="138" y="-139" type="curve"/>
+      <point x="138" y="-167"/>
+      <point x="115" y="-185"/>
+      <point x="82" y="-185" type="curve"/>
+      <point x="42" y="-185"/>
+      <point x="19" y="-155"/>
+      <point x="19" y="-155" type="curve"/>
+      <point x="10" y="-164" type="line"/>
+      <point x="10" y="-164"/>
+      <point x="42" y="-212"/>
+      <point x="100" y="-212" type="curve"/>
+      <point x="156" y="-212"/>
+      <point x="203" y="-189"/>
+      <point x="203" y="-139" type="curve"/>
+      <point x="203" y="-88"/>
+      <point x="157" y="-63"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2018-10-02 17:48:08 +0000</string>
+    </dict>
+  </lib>
+</glyph>

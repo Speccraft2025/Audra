@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="u1F71C" format="2">
+  <advance width="970"/>
+  <unicode hex="1F71C"/>
+  <outline>
+    <component base="male"/>
+    <component base="_part.ring" xOffset="647" yOffset="132"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-27 20:44:33 +0000</string>
+    </dict>
+  </lib>
+</glyph>

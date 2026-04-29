@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="_part.Ercy2" format="2">
+  <advance width="764"/>
+  <outline>
+    <contour>
+      <point x="400" y="248" type="curve"/>
+      <point x="400" y="248"/>
+      <point x="400" y="248"/>
+      <point x="400" y="219" type="curve"/>
+      <point x="602" y="219"/>
+      <point x="739" y="334"/>
+      <point x="739" y="475" type="curve"/>
+      <point x="739" y="616"/>
+      <point x="626" y="700"/>
+      <point x="454" y="700" type="curve"/>
+      <point x="98" y="700" type="line"/>
+      <point x="98" y="652" type="line"/>
+      <point x="141" y="652"/>
+      <point x="190" y="541"/>
+      <point x="189" y="350" type="curve"/>
+      <point x="189" y="29"/>
+      <point x="0" y="29"/>
+      <point x="0" y="29" type="curve"/>
+      <point x="0" y="0" type="line"/>
+      <point x="553" y="0" type="line"/>
+      <point x="553" y="29" type="line"/>
+      <point x="553" y="29"/>
+      <point x="366" y="29"/>
+      <point x="366" y="332" type="curve"/>
+      <point x="366" y="525"/>
+      <point x="429" y="613"/>
+      <point x="454" y="613" type="curve"/>
+      <point x="494" y="613"/>
+      <point x="527" y="519"/>
+      <point x="527" y="437" type="curve"/>
+      <point x="527" y="286"/>
+      <point x="400" y="248"/>
+    </contour>
+    <contour>
+      <point x="58" y="700" type="line"/>
+      <point x="58" y="652" type="line"/>
+      <point x="98" y="652" type="line"/>
+      <point x="98" y="700" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-28 18:46:03 +0000</string>
+    </dict>
+  </lib>
+</glyph>

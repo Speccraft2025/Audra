@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="T" format="2">
+  <advance width="828"/>
+  <unicode hex="0054"/>
+  <anchor x="414" y="0" name="bottom"/>
+  <anchor x="414" y="350" name="center"/>
+  <anchor x="414" y="700" name="top"/>
+  <outline>
+    <contour>
+      <point x="25" y="700" type="line"/>
+      <point x="59" y="362" type="line"/>
+      <point x="59" y="362"/>
+      <point x="59" y="362"/>
+      <point x="88" y="362" type="curve"/>
+      <point x="88" y="456"/>
+      <point x="88" y="602"/>
+      <point x="191" y="602" type="curve"/>
+      <point x="269" y="602"/>
+      <point x="321" y="501"/>
+      <point x="321" y="350" type="curve"/>
+      <point x="321" y="157"/>
+      <point x="247" y="29"/>
+      <point x="137" y="29" type="curve"/>
+      <point x="137" y="0" type="line"/>
+      <point x="691" y="0" type="line"/>
+      <point x="691" y="29" type="line"/>
+      <point x="581" y="29"/>
+      <point x="507" y="157"/>
+      <point x="507" y="350" type="curve"/>
+      <point x="507" y="501"/>
+      <point x="559" y="602"/>
+      <point x="637" y="602" type="curve"/>
+      <point x="740" y="602"/>
+      <point x="740" y="456"/>
+      <point x="740" y="362" type="curve"/>
+      <point x="769" y="362"/>
+      <point x="769" y="362"/>
+      <point x="769" y="362" type="curve"/>
+      <point x="803" y="700" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2020-11-17 23:28:15 +0000</string>
+    </dict>
+  </lib>
+</glyph>

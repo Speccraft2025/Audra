@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Ohorn" format="2">
+  <advance width="1021"/>
+  <unicode hex="01A0"/>
+  <outline>
+    <component base="O"/>
+    <component base="uni031B" xOffset="769" yOffset="-30"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-06-27 21:18:53 +0000</string>
+      <key>com.schriftgestaltung.Glyphs.rightMetricsKey</key>
+      <string>=+120</string>
+    </dict>
+  </lib>
+</glyph>

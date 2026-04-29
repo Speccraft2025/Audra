@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audra Technology — Automated Beat-to-Video Engine</title>
+  <meta name="description" content="Audra v0 — Drop your beats and covers, pick a platform, render scroll-stopping videos instantly." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
+  <link rel="stylesheet" href="/static/style.css?v=1.3" />
+</head>
+<body>
+
+  <!-- ── Ambient Background ── -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-asset">
+          <img src="/static/assets/logo.png" alt="Audra Technology">
+        </div>
+      </div>
+      <div class="header-tagline">Technology for Creators</div>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- ── Step 1: Platform Selector ── -->
+    <section class="section" id="step-platform">
+      <div class="step-label"><span class="step-num">01</span> Choose Orientations</div>
+      <p class="section-sub">Select your target formats. YouTube is default.</p>
+      <div class="platform-grid-large" id="platformGrid">
+
+        <button class="platform-card-large active" data-platform="landscape">
+          <div class="card-large-body">
+            <span class="card-title">YouTube video</span>
+            <span class="card-res">1920 × 1080</span>
+            <span class="card-label">Landscape</span>
+            <span class="card-desc">Full beat</span>
+          </div>
+          <div class="multi-check"></div>
+        </button>
+
+        <button class="platform-card-large" data-platform="portrait">
+          <div class="card-large-body">
+            <span class="card-title">Social Media Content</span>
+            <span class="card-res">1080 × 1920</span>
+            <span class="card-label">Portrait</span>
+            <span class="card-desc">30 seconds cut</span>
+          </div>
+          <div class="multi-check"></div>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ── Step 2: Beat List ── -->
+    <section class="section" id="step-beats">
+      <div class="step-label"><span class="step-num">02</span> Upload Beat List</div>
+      <p class="section-sub">Limit: 10 beats. Add each beat and its respective image/gif below.</p>
+
+      <div class="pairs-list" id="pairsList">
+        <!-- Beat rows injected here by JS -->
+      </div>
+
+      <button class="add-btn" id="addBeatBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Add Another Beat
+      </button>
+    </section>
+
+    <!-- ── Render Action ── -->
+    <section class="section render-section">
+      <button class="render-btn" id="renderBtn" disabled>
+        <div class="render-btn-inner">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>
+          Render All Videos
+        </div>
+      </button>
+      <div class="render-info">
+        <p class="render-hint" id="renderHint">Add at least one beat pair to render</p>
+        <p class="render-eta" id="renderEta"></p>
+      </div>
+    </section>
+
+    <!-- ── Step 3: Output List ── -->
+    <section class="section" id="step-gallery" style="display:none">
+      <div class="step-label"><span class="step-num">03</span> Download Outputs</div>
+      
+      <!-- NEW: SYSTEM MONITORING DASHBOARD -->
+      <div id="system-dashboard" class="collapsible-panel" style="margin-top: 50px; border-top: 1px solid #333; padding-top: 20px;">
+          <div class="step-label" style="display: flex; align-items: center; gap: 10px;">
+              <span style="color: #00ff00;">●</span> SYSTEM HEALTH <span id="engine-version-tag" style="font-size: 0.6rem; opacity: 0.5;">v1.1.0-hardened</span>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 15px;">
+              <div class="metric-card">
+                  <div style="font-size: 0.7rem; color: #888;">CPU USAGE</div>
+                  <div id="cpu-metric" style="font-size: 1.2rem; font-family: monospace;">0%</div>
+              </div>
+              <div class="metric-card">
+                  <div style="font-size: 0.7rem; color: #888;">MEMORY</div>
+                  <div id="mem-metric" style="font-size: 1.2rem; font-family: monospace;">0MB</div>
+              </div>
+              <div class="metric-card">
+                  <div style="font-size: 0.7rem; color: #888;">DISK FREE</div>
+                  <div id="disk-metric" style="font-size: 1.2rem; font-family: monospace;">0GB</div>
+              </div>
+              <div class="metric-card">
+                  <div style="font-size: 0.7rem; color: #888;">QUEUE</div>
+                  <div id="queue-metric" style="font-size: 1.2rem; font-family: monospace;">0 jobs</div>
+              </div>
+          </div>
+
+          <div id="log-monitor" style="margin-top: 20px; background: #0a0a0a; border: 1px solid #222; padding: 10px; font-family: monospace; font-size: 0.65rem; color: #aaa; max-height: 150px; overflow-y: auto;">
+              <div style="color: #444; margin-bottom: 5px; border-bottom: 1px solid #222; padding-bottom: 5px;">ENGINE_LOGS</div>
+              <div id="log-content">Initializing logs...</div>
+          </div>
+      </div>
+
+      <div class="output-list" id="outputList">
+        <!-- Rendered results grouped by beat title go here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Hidden file inputs ── -->
+  <input type="file" id="globalAudioInput" accept=".mp3,.wav,.aiff,.m4a" multiple style="display:none" />
+  <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" style="display:none" />
+
+  <script src="/static/app.js?v=1.3"></script>
+</body>
+</html>

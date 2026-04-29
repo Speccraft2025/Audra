@@ -1,0 +1,16 @@
+---
+unified font repository version: "0.2"
+unified font repository url: https://github.com/raphaelbastide/Unified-Font-Repository/
+typeface family:
+  name: Ouroboros
+  tags:
+  - Human made
+  - Serif
+  - Fantasy
+  repository url: https://codeberg.org/arielmartinperez/ouroboros
+  project url: http://arielmartinperez.com/
+  tools:
+  - Glyphs
+  similar fonts:
+  sample text: Sphinx of black quartz, judge my vow!
+...

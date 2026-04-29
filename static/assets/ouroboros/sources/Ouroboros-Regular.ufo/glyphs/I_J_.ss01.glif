@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="IJ.ss01" format="2">
+  <advance width="1319"/>
+  <outline>
+    <component base="I"/>
+    <component base="J" xOffset="554"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-06-27 21:32:47 +0000</string>
+    </dict>
+  </lib>
+</glyph>

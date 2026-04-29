@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="emdash" format="2">
+  <advance width="846"/>
+  <unicode hex="2014"/>
+  <outline>
+    <contour>
+      <point x="54" y="323" type="curve"/>
+      <point x="25" y="323" type="line"/>
+      <point x="25" y="178" type="line"/>
+      <point x="54" y="178" type="line"/>
+      <point x="54" y="178"/>
+      <point x="54" y="207"/>
+      <point x="423" y="207" type="curve"/>
+      <point x="792" y="207"/>
+      <point x="792" y="178"/>
+      <point x="792" y="178" type="curve"/>
+      <point x="821" y="178" type="line"/>
+      <point x="821" y="323" type="line"/>
+      <point x="792" y="323" type="line"/>
+      <point x="792" y="323"/>
+      <point x="792" y="294"/>
+      <point x="423" y="294" type="curve"/>
+      <point x="54" y="294"/>
+      <point x="54" y="323"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-07-09 13:25:30 +0000</string>
+    </dict>
+  </lib>
+</glyph>

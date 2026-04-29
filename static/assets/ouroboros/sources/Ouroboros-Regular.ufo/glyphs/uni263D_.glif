@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni263D" format="2">
+  <advance width="515"/>
+  <unicode hex="263D"/>
+  <outline>
+    <contour>
+      <point x="25" y="37" type="curve"/>
+      <point x="25" y="0" type="line"/>
+      <point x="338" y="0"/>
+      <point x="490" y="167"/>
+      <point x="490" y="350" type="curve" smooth="yes"/>
+      <point x="490" y="533"/>
+      <point x="338" y="700"/>
+      <point x="25" y="700" type="curve"/>
+      <point x="25" y="663" type="line"/>
+      <point x="174" y="663"/>
+      <point x="245" y="512"/>
+      <point x="245" y="350" type="curve" smooth="yes"/>
+      <point x="245" y="187"/>
+      <point x="174" y="37"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-27 20:44:33 +0000</string>
+    </dict>
+  </lib>
+</glyph>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="longs_t.ss01.liga" format="2">
+  <advance width="822"/>
+  <outline>
+    <contour>
+      <point x="778" y="551" type="line"/>
+      <point x="778" y="551"/>
+      <point x="778" y="501"/>
+      <point x="668" y="501" type="curve"/>
+      <point x="668" y="508"/>
+      <point x="668" y="537"/>
+      <point x="668" y="546" type="curve"/>
+      <point x="668" y="642"/>
+      <point x="757" y="642"/>
+      <point x="757" y="642" type="curve"/>
+      <point x="757" y="671" type="line"/>
+      <point x="585" y="671" type="line"/>
+      <point x="457" y="671" type="line"/>
+      <point x="457" y="642" type="line"/>
+      <point x="457" y="642"/>
+      <point x="501" y="642"/>
+      <point x="501" y="546" type="curve"/>
+      <point x="501" y="540"/>
+      <point x="501" y="506"/>
+      <point x="501" y="501" type="curve"/>
+      <point x="442" y="501"/>
+      <point x="442" y="551"/>
+      <point x="442" y="551" type="curve"/>
+      <point x="413" y="551" type="line"/>
+      <point x="413" y="341" type="line"/>
+      <point x="442" y="341" type="line"/>
+      <point x="442" y="341"/>
+      <point x="442" y="389"/>
+      <point x="501" y="389" type="curve"/>
+      <point x="501" y="363"/>
+      <point x="501" y="345"/>
+      <point x="501" y="321" type="curve"/>
+      <point x="501" y="1"/>
+      <point x="709" y="1"/>
+      <point x="807" y="1" type="curve"/>
+      <point x="807" y="30" type="line"/>
+      <point x="807" y="30"/>
+      <point x="669" y="30"/>
+      <point x="669" y="351" type="curve"/>
+      <point x="669" y="375"/>
+      <point x="669" y="372"/>
+      <point x="669" y="392" type="curve"/>
+      <point x="778" y="392"/>
+      <point x="778" y="341"/>
+      <point x="778" y="341" type="curve"/>
+      <point x="807" y="341" type="line"/>
+      <point x="807" y="551" type="line"/>
+    </contour>
+    <contour>
+      <point x="442" y="582" type="curve"/>
+      <point x="442" y="730"/>
+      <point x="411" y="800"/>
+      <point x="304" y="800" type="curve"/>
+      <point x="205" y="800"/>
+      <point x="132" y="694"/>
+      <point x="130" y="500" type="curve"/>
+      <point x="39" y="500"/>
+      <point x="39" y="550"/>
+      <point x="39" y="550" type="curve"/>
+      <point x="10" y="550" type="line"/>
+      <point x="10" y="345" type="line"/>
+      <point x="39" y="345" type="line"/>
+      <point x="39" y="345"/>
+      <point x="39" y="396"/>
+      <point x="130" y="396" type="curve"/>
+      <point x="130" y="363"/>
+      <point x="130" y="303"/>
+      <point x="130" y="265" type="curve"/>
+      <point x="130" y="29"/>
+      <point x="10" y="29"/>
+      <point x="10" y="29" type="curve"/>
+      <point x="10" y="0" type="line"/>
+      <point x="412" y="0" type="line"/>
+      <point x="412" y="29" type="line"/>
+      <point x="412" y="29"/>
+      <point x="291" y="29"/>
+      <point x="292" y="350" type="curve"/>
+      <point x="292" y="424"/>
+      <point x="292" y="391"/>
+      <point x="292" y="500" type="curve"/>
+      <point x="292" y="671"/>
+      <point x="334" y="691"/>
+      <point x="357" y="691" type="curve"/>
+      <point x="384" y="691"/>
+      <point x="413" y="659"/>
+      <point x="413" y="582" type="curve"/>
+      <point x="430" y="582"/>
+      <point x="439" y="582"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-28 20:42:56 +0000</string>
+      <key>com.schriftgestaltung.Glyphs.leftMetricsKey</key>
+      <string>longs</string>
+      <key>com.schriftgestaltung.Glyphs.rightMetricsKey</key>
+      <string>t</string>
+    </dict>
+  </lib>
+</glyph>

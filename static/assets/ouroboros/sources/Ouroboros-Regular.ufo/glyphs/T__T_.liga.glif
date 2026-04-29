@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="T_T.liga" format="2">
+  <advance width="1418"/>
+  <outline>
+    <contour>
+      <point x="779" y="700" type="line"/>
+      <point x="639" y="700" type="line"/>
+      <point x="25" y="700" type="line"/>
+      <point x="59" y="362" type="line"/>
+      <point x="59" y="362"/>
+      <point x="59" y="362"/>
+      <point x="88" y="362" type="curve"/>
+      <point x="88" y="456"/>
+      <point x="88" y="612"/>
+      <point x="196" y="612" type="curve"/>
+      <point x="293" y="612"/>
+      <point x="326" y="438"/>
+      <point x="326" y="350" type="curve"/>
+      <point x="326" y="29"/>
+      <point x="137" y="29"/>
+      <point x="137" y="29" type="curve"/>
+      <point x="137" y="0" type="line"/>
+      <point x="691" y="0" type="line"/>
+      <point x="691" y="29" type="line"/>
+      <point x="691" y="29"/>
+      <point x="502" y="29"/>
+      <point x="502" y="350" type="curve"/>
+      <point x="502" y="438"/>
+      <point x="541" y="612"/>
+      <point x="709" y="612" type="curve"/>
+      <point x="877" y="612"/>
+      <point x="916" y="438"/>
+      <point x="916" y="350" type="curve"/>
+      <point x="916" y="29"/>
+      <point x="727" y="29"/>
+      <point x="727" y="29" type="curve"/>
+      <point x="727" y="0" type="line"/>
+      <point x="1281" y="0" type="line"/>
+      <point x="1281" y="29" type="line"/>
+      <point x="1281" y="29"/>
+      <point x="1092" y="29"/>
+      <point x="1092" y="350" type="curve"/>
+      <point x="1092" y="438"/>
+      <point x="1125" y="612"/>
+      <point x="1222" y="612" type="curve"/>
+      <point x="1330" y="612"/>
+      <point x="1330" y="456"/>
+      <point x="1330" y="362" type="curve"/>
+      <point x="1359" y="362"/>
+      <point x="1359" y="362"/>
+      <point x="1359" y="362" type="curve"/>
+      <point x="1393" y="700" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-28 15:58:04 +0000</string>
+      <key>com.schriftgestaltung.Glyphs.leftMetricsKey</key>
+      <string>T</string>
+      <key>com.schriftgestaltung.Glyphs.rightMetricsKey</key>
+      <string>T</string>
+    </dict>
+  </lib>
+</glyph>

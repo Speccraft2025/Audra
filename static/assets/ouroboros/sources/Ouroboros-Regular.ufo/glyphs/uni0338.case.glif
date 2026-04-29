@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="uni0338.case" format="2">
+  <advance width="0"/>
+  <anchor x="379" y="347" name="_center"/>
+  <outline>
+    <contour>
+      <point x="32" y="102" type="curve"/>
+      <point x="10" y="82" type="line"/>
+      <point x="114" y="-21" type="line"/>
+      <point x="133" y="0" type="line"/>
+      <point x="133" y="0"/>
+      <point x="114" y="20"/>
+      <point x="410" y="317" type="curve"/>
+      <point x="706" y="614"/>
+      <point x="726" y="592"/>
+      <point x="726" y="592" type="curve"/>
+      <point x="747" y="614" type="line"/>
+      <point x="644" y="715" type="line"/>
+      <point x="624" y="696" type="line"/>
+      <point x="624" y="696"/>
+      <point x="644" y="674"/>
+      <point x="348" y="378" type="curve"/>
+      <point x="51" y="82"/>
+      <point x="32" y="102"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-26 09:17:18 +0000</string>
+    </dict>
+  </lib>
+</glyph>

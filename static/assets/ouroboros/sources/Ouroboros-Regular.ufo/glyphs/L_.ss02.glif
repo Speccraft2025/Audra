@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="L.ss02" format="2">
+  <advance width="848"/>
+  <anchor x="299" y="0" name="bottom"/>
+  <anchor x="299" y="350" name="center"/>
+  <anchor x="299" y="700" name="top"/>
+  <anchor x="698" y="700" name="topright"/>
+  <outline>
+    <contour>
+      <point x="789" y="451" type="line"/>
+      <point x="760" y="451" type="line"/>
+      <point x="760" y="451"/>
+      <point x="780" y="88"/>
+      <point x="554" y="88" type="curve"/>
+      <point x="434" y="88"/>
+      <point x="391" y="255"/>
+      <point x="391" y="350" type="curve"/>
+      <point x="391" y="665"/>
+      <point x="578" y="671"/>
+      <point x="578" y="671" type="curve"/>
+      <point x="578" y="700" type="line"/>
+      <point x="25" y="700" type="line"/>
+      <point x="25" y="671" type="line"/>
+      <point x="25" y="671"/>
+      <point x="214" y="665"/>
+      <point x="214" y="350" type="curve"/>
+      <point x="214" y="34"/>
+      <point x="25" y="29"/>
+      <point x="25" y="29" type="curve"/>
+      <point x="25" y="0" type="line"/>
+      <point x="823" y="0" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-06-27 22:38:53 +0000</string>
+    </dict>
+  </lib>
+</glyph>

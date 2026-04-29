@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="logicalnot" format="2">
+  <advance width="463"/>
+  <unicode hex="00AC"/>
+  <outline>
+    <contour>
+      <point x="409" y="278" type="curve"/>
+      <point x="409" y="361" type="line"/>
+      <point x="380" y="361" type="line"/>
+      <point x="380" y="361"/>
+      <point x="381" y="332"/>
+      <point x="219" y="332" type="curve"/>
+      <point x="53" y="332"/>
+      <point x="53" y="361"/>
+      <point x="53" y="361" type="curve"/>
+      <point x="25" y="361" type="line"/>
+      <point x="25" y="196" type="line"/>
+      <point x="53" y="196" type="line"/>
+      <point x="53" y="196"/>
+      <point x="53" y="225"/>
+      <point x="219" y="225" type="curve"/>
+      <point x="259" y="225"/>
+      <point x="289" y="224"/>
+      <point x="311" y="221" type="curve"/>
+      <point x="311" y="115"/>
+      <point x="283" y="115"/>
+      <point x="283" y="115" type="curve"/>
+      <point x="283" y="86" type="line"/>
+      <point x="438" y="86" type="line"/>
+      <point x="438" y="115" type="line"/>
+      <point x="438" y="115"/>
+      <point x="410" y="115"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-27 20:55:12 +0000</string>
+    </dict>
+  </lib>
+</glyph>

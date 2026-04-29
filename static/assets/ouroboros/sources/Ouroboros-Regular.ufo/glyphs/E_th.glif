@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Eth" format="2">
+  <advance width="872"/>
+  <unicode hex="00D0"/>
+  <outline>
+    <contour>
+      <point x="156" y="413" type="curve"/>
+      <point x="127" y="413" type="line"/>
+      <point x="127" y="288" type="line"/>
+      <point x="156" y="288" type="line"/>
+      <point x="156" y="288"/>
+      <point x="156" y="317"/>
+      <point x="322" y="317" type="curve"/>
+      <point x="488" y="317"/>
+      <point x="488" y="288"/>
+      <point x="488" y="288" type="curve"/>
+      <point x="517" y="288" type="line"/>
+      <point x="517" y="413" type="line"/>
+      <point x="488" y="413" type="line"/>
+      <point x="488" y="413"/>
+      <point x="488" y="384"/>
+      <point x="322" y="384" type="curve"/>
+      <point x="156" y="384"/>
+      <point x="156" y="413"/>
+    </contour>
+    <component base="D"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-08 08:57:58 +0000</string>
+    </dict>
+  </lib>
+</glyph>

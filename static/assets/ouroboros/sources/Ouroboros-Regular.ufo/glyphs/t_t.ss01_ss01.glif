@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="t_t.ss01_ss01" format="2">
+  <advance width="779"/>
+  <outline>
+    <contour>
+      <point x="740" y="340" type="curve"/>
+      <point x="769" y="340" type="line"/>
+      <point x="769" y="550" type="line"/>
+      <point x="740" y="550" type="line"/>
+      <point x="740" y="550"/>
+      <point x="740" y="500"/>
+      <point x="630" y="500" type="curve"/>
+      <point x="630" y="507"/>
+      <point x="630" y="536"/>
+      <point x="630" y="545" type="curve"/>
+      <point x="630" y="641"/>
+      <point x="719" y="641"/>
+      <point x="719" y="641" type="curve"/>
+      <point x="719" y="670" type="line"/>
+      <point x="547" y="670" type="line"/>
+      <point x="385" y="670" type="line"/>
+      <point x="385" y="641" type="line"/>
+      <point x="385" y="641"/>
+      <point x="463" y="641"/>
+      <point x="463" y="545" type="curve"/>
+      <point x="463" y="539"/>
+      <point x="463" y="505"/>
+      <point x="463" y="500" type="curve"/>
+      <point x="379" y="500"/>
+      <point x="379" y="550"/>
+      <point x="379" y="550" type="curve"/>
+      <point x="370" y="550" type="line"/>
+      <point x="350" y="550" type="line"/>
+      <point x="350" y="550"/>
+      <point x="350" y="500"/>
+      <point x="265" y="500" type="curve"/>
+      <point x="265" y="507"/>
+      <point x="265" y="536"/>
+      <point x="265" y="545" type="curve"/>
+      <point x="265" y="641"/>
+      <point x="354" y="641"/>
+      <point x="354" y="641" type="curve"/>
+      <point x="354" y="670" type="line"/>
+      <point x="182" y="670" type="line"/>
+      <point x="20" y="670" type="line"/>
+      <point x="20" y="641" type="line"/>
+      <point x="20" y="641"/>
+      <point x="98" y="641"/>
+      <point x="98" y="545" type="curve"/>
+      <point x="98" y="539"/>
+      <point x="98" y="505"/>
+      <point x="98" y="500" type="curve"/>
+      <point x="39" y="500"/>
+      <point x="39" y="550"/>
+      <point x="39" y="550" type="curve"/>
+      <point x="10" y="550" type="line"/>
+      <point x="10" y="340" type="line"/>
+      <point x="39" y="340" type="line"/>
+      <point x="39" y="340"/>
+      <point x="39" y="388"/>
+      <point x="98" y="388" type="curve"/>
+      <point x="98" y="362"/>
+      <point x="98" y="344"/>
+      <point x="98" y="320" type="curve"/>
+      <point x="98" y="0"/>
+      <point x="306" y="0"/>
+      <point x="404" y="0" type="curve"/>
+      <point x="404" y="29" type="line"/>
+      <point x="404" y="29"/>
+      <point x="266" y="29"/>
+      <point x="266" y="350" type="curve"/>
+      <point x="266" y="374"/>
+      <point x="266" y="371"/>
+      <point x="266" y="391" type="curve"/>
+      <point x="350" y="391"/>
+      <point x="350" y="340"/>
+      <point x="350" y="340" type="curve"/>
+      <point x="370" y="340" type="line"/>
+      <point x="379" y="340" type="line"/>
+      <point x="379" y="340"/>
+      <point x="379" y="388"/>
+      <point x="463" y="388" type="curve"/>
+      <point x="463" y="362"/>
+      <point x="463" y="344"/>
+      <point x="463" y="320" type="curve"/>
+      <point x="463" y="0"/>
+      <point x="671" y="0"/>
+      <point x="769" y="0" type="curve"/>
+      <point x="769" y="29" type="line"/>
+      <point x="769" y="29"/>
+      <point x="631" y="29"/>
+      <point x="631" y="350" type="curve"/>
+      <point x="631" y="374"/>
+      <point x="631" y="371"/>
+      <point x="631" y="391" type="curve"/>
+      <point x="740" y="391"/>
+      <point x="740" y="340"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2019-10-28 20:43:34 +0000</string>
+      <key>com.schriftgestaltung.Glyphs.leftMetricsKey</key>
+      <string>t.ss01</string>
+      <key>com.schriftgestaltung.Glyphs.rightMetricsKey</key>
+      <string>t.ss01</string>
+    </dict>
+  </lib>
+</glyph>

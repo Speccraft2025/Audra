@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="Uring.ss02" format="2">
+  <advance width="945"/>
+  <outline>
+    <component base="U.ss02"/>
+    <component base="uni030A.ss01" xOffset="362" yOffset="170"/>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.schriftgestaltung.Glyphs.lastChange</key>
+      <string>2018-10-21 12:01:55 +0000</string>
+    </dict>
+  </lib>
+</glyph>
