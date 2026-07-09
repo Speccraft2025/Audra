@@ -10,7 +10,7 @@ class ValidationLayer:
         """Use ffprobe to validate the file existence and extract metadata."""
         try:
             cmd = [
-                "ffprobe", "-v", "error", "-i", file_path,
+                config.FFPROBE_BINARY, "-v", "error", "-i", file_path,
                 "-show_entries", "format=duration:stream=duration,width,height,codec_name",
                 "-of", "json"
             ]
@@ -24,7 +24,7 @@ class ValidationLayer:
         """Deep decode scan to find true duration of potentially corrupt files."""
         try:
             # Force full scan
-            cmd = ["ffmpeg", "-i", file_path, "-f", "null", "-"]
+            cmd = [config.FFMPEG_BINARY, "-i", file_path, "-f", "null", "-"]
             result = subprocess.run(cmd, capture_output=True, text=True)
             match = re.search(r"time=(\d+):(\d+):(\d+\.\d+)", result.stderr)
             if match:
@@ -40,7 +40,7 @@ class ValidationLayer:
         target = file_path + ".normalized.wav"
         try:
             cmd = [
-                "ffmpeg", "-y", "-i", file_path,
+                config.FFMPEG_BINARY, "-y", "-i", file_path,
                 "-acodec", "pcm_s16le", "-ar", "44100", "-ac", "2",
                 target
             ]

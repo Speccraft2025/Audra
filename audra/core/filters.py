@@ -1,3 +1,5 @@
+from audra import config
+
 
 class FilterBuilder:
     """
@@ -29,11 +31,9 @@ def text_watermark(text, position="bottom-right", opacity=0.7, fontsize=24):
     
     # Escape special FFmpeg characters
     safe_text = text.replace("'", "\\'").replace(":", "\\:")
-    # Using the exact Ouroboros font path provided
-    font_path = "/Users/speccraftmedialtd./Documents/Web/Audra/static/assets/ouroboros/fonts/Ouroboros-Regular.ttf"
-    
+
     return (
-        f"drawtext=text='{safe_text}':fontfile={font_path}:"
+        f"drawtext=text='{safe_text}':fontfile={config.WATERMARK_FONT}:"
         f"fontsize={fontsize}:fontcolor=white@{opacity}:{pos_str}"
     )
 
@@ -69,10 +69,9 @@ def text_overlay(text, start, end, position="center", fontsize=48):
     pos_str = pos_map.get(position, pos_map["center"])
     
     safe_text = text.replace("'", "\\'").replace(":", "\\:")
-    font_path = "/Users/speccraftmedialtd./Documents/Web/Audra/static/assets/ouroboros/fonts/Ouroboros-Regular.ttf"
-    
+
     return (
-        f"drawtext=text='{safe_text}':fontfile={font_path}:fontsize={fontsize}:"
+        f"drawtext=text='{safe_text}':fontfile={config.WATERMARK_FONT}:fontsize={fontsize}:"
         f"enable='between(t,{start},{end})':fontcolor=white:"
         f"borderw=2:bordercolor=black@{0.8}:{pos_str}"
     )

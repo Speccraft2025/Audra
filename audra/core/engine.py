@@ -63,7 +63,7 @@ class RenderingEngine:
         filter_str = fb.build()
 
         # 3. Construct Command
-        cmd = ['ffmpeg', '-y', '-threads', '0']
+        cmd = [config.FFMPEG_BINARY, '-y', '-threads', '0']
         
         # Seek in audio if 30s mode
         if start_time > 0:
