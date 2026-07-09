@@ -16,14 +16,19 @@ from audra.utils.monitoring import MonitoringService
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
-
+from audra.saas_auth import require_saas_auth
 # ─── API Routes (Hardened & Modular) ────────────────────────────────────────
 
 @app.route('/')
 def index():
     return send_file(os.path.join(config.BASE_DIR, 'index.html'))
 
+@app.route('/workspace')
+def workspace():
+    return send_file(os.path.join(config.BASE_DIR, 'workspace.html'))
+
 @app.route('/process', methods=['POST'])
+@require_saas_auth
 def process():
     """
     INGESTION LAYER triggered.
