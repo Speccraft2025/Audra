@@ -18,7 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initPresetSelector();
     initUploadCards();
     
-    document.getElementById('renderBtn').addEventListener('click', submitRender);
+    const renderBtn = document.getElementById('renderBtn');
+    if (renderBtn) {
+        renderBtn.addEventListener('click', submitRender);
+    }
+    
+    // Hide home backlink if running in native desktop app wrapper
+    const hideHomeLink = () => {
+        const homeLink = document.getElementById('home-link');
+        if (homeLink) homeLink.style.display = 'none';
+    };
+    if (window.pywebview) {
+        hideHomeLink();
+    } else {
+        window.addEventListener('pywebviewready', hideHomeLink);
+    }
     
     // System metrics pulse
     setInterval(fetchMetrics, 3000);
@@ -60,17 +74,20 @@ function initPresetSelector() {
 function initUploadCards() {
     const audioCard = document.getElementById('audio-upload');
     const imageCard = document.getElementById('image-upload');
+    if (!audioCard || !imageCard) return;
 
     setupUpload(audioCard, 'audio', (file) => {
         audioFile = file;
-        document.getElementById('audio-filename').textContent = truncate(file.name, 25);
+        const filenameEl = document.getElementById('audio-filename');
+        if (filenameEl) filenameEl.textContent = truncate(file.name, 25);
         audioCard.classList.add('filled');
         updateRenderBtn();
     });
 
     setupUpload(imageCard, 'image', (file) => {
         imageFile = file;
-        document.getElementById('image-filename').textContent = truncate(file.name, 25);
+        const filenameEl = document.getElementById('image-filename');
+        if (filenameEl) filenameEl.textContent = truncate(file.name, 25);
         imageCard.classList.add('filled');
         updateRenderBtn();
     });
@@ -193,6 +210,13 @@ function finishRender(jobs) {
             dl.href = `/download/${encodeURIComponent(j.output)}`;
             dl.className = 'dl-btn primary';
             dl.innerHTML = `Download ${label}`;
+            
+            // Hardened WKWebView / Browser binary transfer override
+            dl.addEventListener('click', (e) => {
+                e.preventDefault();
+                downloadFile(dl.href, j.output, dl);
+            });
+            
             actionGrid.appendChild(dl);
         }
     });
@@ -208,20 +232,133 @@ function finishRender(jobs) {
     list.scrollIntoView({ behavior: 'smooth' });
 }
 
+function downloadFile(url, filename, btn) {
+    if (btn.classList.contains('downloading')) {
+        return; // Prevent duplicate clicks
+    }
+
+    const originalHTML = btn.innerHTML;
+    btn.classList.add('downloading');
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = '0.7';
+
+    // ── NATIVE DESKTOP wrapper (pywebview) mode ───────────────────────────
+    if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.download_file === 'function') {
+        btn.innerHTML = `<span class="dl-spinner"></span> Saving File...`;
+        showToast('📂 Opening native macOS save dialog...', 'info');
+
+        window.pywebview.api.download_file(filename).then((result) => {
+            if (result && result.success) {
+                showToast(`🏆 Video saved: ${truncate(result.save_path, 35)}`, 'success');
+            } else if (result && result.cancelled) {
+                showToast('ℹ️ Download cancelled', 'info');
+            } else {
+                showToast(`❌ Save failed: ${result ? result.error : 'Unknown error'}`, 'error');
+            }
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('downloading');
+            btn.style.pointerEvents = '';
+            btn.style.opacity = '';
+        }).catch((err) => {
+            showToast(`❌ Desktop bridge error: ${err}`, 'error');
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('downloading');
+            btn.style.pointerEvents = '';
+            btn.style.opacity = '';
+        });
+        return;
+    }
+
+    // ── SAAS / STANDARD BROWSER mode (binary progress stream) ───────────────
+    showToast(`⬇️ Starting download...`, 'info');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'blob';
+
+    xhr.onprogress = function(event) {
+        if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            btn.innerHTML = `<span class="dl-spinner"></span> Downloading ${percent}%`;
+        } else {
+            btn.innerHTML = `<span class="dl-spinner"></span> Downloading...`;
+        }
+    };
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const blob = xhr.response;
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            const tempLink = document.createElement('a');
+            tempLink.style.display = 'none';
+            tempLink.href = blobUrl;
+            tempLink.download = filename;
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            
+            // Let the browser/OS process the download before clean up
+            setTimeout(() => {
+                window.URL.revokeObjectURL(blobUrl);
+                tempLink.remove();
+            }, 150);
+
+            showToast('🏆 Download completed!', 'success');
+        } else {
+            showToast('❌ Download failed. Server error.', 'error');
+        }
+
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('downloading');
+        btn.style.pointerEvents = '';
+        btn.style.opacity = '';
+    };
+
+    xhr.onerror = function() {
+        showToast('❌ Download failed (network error)', 'error');
+        btn.innerHTML = originalHTML;
+        btn.classList.remove('downloading');
+        btn.style.pointerEvents = '';
+        btn.style.opacity = '';
+    };
+
+    xhr.send();
+}
+
 async function fetchMetrics() {
     try {
         const res = await fetch('/metrics');
         const data = await res.json();
-        document.getElementById('cpu-metric').textContent = `${data.cpu_percent}%`;
-        document.getElementById('mem-metric').textContent = `${data.memory_used_mb}MB`;
-        document.getElementById('disk-metric').textContent = `${data.disk_free_gb}GB`;
-        document.getElementById('queue-metric').textContent = `${data.queue_length} jobs`;
+        
+        const cpuMetric = document.getElementById('cpu-metric');
+        const memMetric = document.getElementById('mem-metric');
+        const diskMetric = document.getElementById('disk-metric');
+        const queueMetric = document.getElementById('queue-metric');
+        
+        if (cpuMetric) cpuMetric.textContent = `${data.cpu_percent}%`;
+        if (memMetric) memMetric.textContent = `${data.memory_used_mb}MB`;
+        if (diskMetric) diskMetric.textContent = `${data.disk_free_gb}GB`;
+        if (queueMetric) queueMetric.textContent = `${data.queue_length} jobs`;
+        
+        // Bind to landing page health banner elements if they exist
+        const cpuHealthVal = document.getElementById('cpu-health-val');
+        if (cpuHealthVal) {
+            cpuHealthVal.textContent = `${data.cpu_percent}%`;
+        }
+        const queueHealthVal = document.getElementById('queue-health-val');
+        if (queueHealthVal) {
+            queueHealthVal.textContent = `${data.queue_length} job${data.queue_length !== 1 ? 's' : ''}`;
+        }
         
         const logsRes = await fetch('/logs');
         const logs = await logsRes.json();
-        document.getElementById('log-content').innerHTML = logs.map(l => 
-            `<div><span style="color: ${l.level==='ERROR'?'#ff4444':'#888'}">[${l.level}]</span> ${l.message}</div>`
-        ).join('');
+        
+        const logContent = document.getElementById('log-content');
+        if (logContent) {
+            logContent.innerHTML = logs.map(l => 
+                `<div><span style="color: ${l.level==='ERROR'?'#ff4444':'#888'}">[${l.level}]</span> ${l.message}</div>`
+            ).join('');
+        }
     } catch(e) {}
 }
 
