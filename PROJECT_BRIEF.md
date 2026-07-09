@@ -55,20 +55,59 @@ Constructs dynamic filter graphs based on user selection. It handles complex ope
 
 ## 📈 Roadmap & Evolution
 
-### Phase 1: Local Automation (Current)
-- [x] V2 Preset Engine (Stable)
-- [x] Multi-variant Batching
-- [x] System Health Dashboard
+**Product thesis:** Audra is a local-first, one-click batch publisher for beat-culture producers (type-beat / trap / afrobeats / lo-fi) — turn a beat + cover into every format needed to post today, without touching After Effects or uploading unreleased music anywhere. Primary audience: independent bedroom producers who publish high-volume, low-budget content. Secondary/later audience: small labels and producer collectives (Studio tier, Phase 3).
 
-### Phase 2: SaaS Hardening (Upcoming)
-- [ ] User Authentication & Artist Profiles.
-- [ ] Stripe Payment Integration (Pay-per-render).
-- [ ] Cloud Storage Integration (AWS S3 / Google Cloud Storage).
+**Explicitly not doing right now:** building SaaS/cloud and desktop simultaneously (desktop ships first, cloud is Phase 3); competing on FFT audio-reactivity (Phase 4, after the core loop is validated); complex team/org features before there are paying individual users.
 
-### Phase 3: Advanced Features
-- [ ] Audio-Reactive Visuals (FFT-driven filters).
-- [ ] Custom Text Overlays (Lyrics/Titles).
-- [ ] Video Background Support.
+### Phase 1: Local Automation Engine (Complete)
+- [x] V2 Preset Engine — 5 mood-graded presets, 3 intensities
+- [x] Multi-variant batch rendering (YouTube / Shorts / 30s teaser)
+- [x] System health dashboard, live logs, job queue
+- [x] Bundled-ffmpeg path resolution for desktop packaging (fixes the code-234 failures seen pre-fix)
+
+### Phase 2: Desktop Product Launch (Next — the actual ship)
+Goal: a non-technical producer downloads Audra, activates a license, and publishes their first batch in under 5 minutes — entirely offline.
+
+**2.0 Technical debt / portability** (blocks everything below)
+- [ ] Fix hardcoded dev-machine font path in `audra/core/filters.py` → resolve via `config.BASE_DIR`
+- [ ] Add `build/`, `dist/` to `.gitignore`; stop tracking generated PyInstaller output
+- [ ] Add `psutil`, `pywebview` to `requirements.txt`
+- [ ] Resolve duplicate `saas_auth.py` (`audra/` vs `packaging/saas/`)
+- [ ] Commit the in-progress desktop/UI work in logical, reviewable chunks
+
+**2.1 Licensing & monetization rework**
+- [ ] Rework `saas_auth.py` from per-render license check → subscription entitlement check (validated once per launch/session)
+- [ ] Define Free / Pro tiers in `config.py` (render cap, preset access, watermark toggle)
+- [ ] Engine-level watermark enforcement for Free tier when no active Pro entitlement
+- [ ] Stripe or Lemon Squeezy hosted checkout → license key issuance (no in-app billing UI needed)
+
+**2.2 Flagship differentiator: branding & overlays**
+- [ ] UI: producer tag / socials handle / title text field on the render form
+- [ ] Wire existing `text_watermark` / `text_overlay` filters into the render pipeline via job `settings`
+- [ ] Preset-aware placement so overlays don't collide with existing motion/vignette
+- [ ] Persist a producer's default tag so branding is one-click on every future render
+
+**2.3 Distribution**
+- [ ] Code-sign + notarize the macOS `.app` (currently unsigned in `dist/`)
+- [ ] Auto-update mechanism (Sparkle, or a simple version-check endpoint)
+- [ ] Landing page with demo reel + license purchase flow
+- [ ] Windows build pass (packaging scripts already stub `.ps1` — verify cross-platform ffmpeg bundling)
+
+**2.4 Validation**
+- [ ] Closed beta with 10-20 real type-beat producers (YouTube/Discord beat communities)
+- [ ] Track time-to-first-render, renders/week/user, free→paid conversion
+- [ ] Exit criteria: organic word-of-mouth + real paid conversions before investing in Phase 3
+
+### Phase 3: Studio / Team Tier (Cloud — only after Phase 2 has paying users)
+- [ ] Stand up the parked `packaging/saas/` Docker scaffolding for real
+- [ ] Multi-seat accounts, shared brand presets, org-wide no-watermark
+- [ ] Cloud render queue for agencies/labels managing multiple artist channels
+- [ ] API access for programmatic batch submission
+
+### Phase 4: Advanced Visual Differentiation
+- [ ] Audio-reactive visuals (FFT-driven filters) — a "wow feature" layered on a validated core loop, not a race to parity with waveform-first tools
+- [ ] Video background support
+- [ ] Community/marketplace presets
 
 ---
 
