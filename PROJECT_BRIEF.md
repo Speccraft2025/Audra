@@ -82,10 +82,11 @@ Goal: a non-technical producer downloads Audra, activates a license, and publish
 - [ ] Stripe or Lemon Squeezy hosted checkout → license key issuance (no in-app billing UI needed)
 
 **2.2 Flagship differentiator: branding & overlays**
-- [ ] UI: producer tag / socials handle / title text field on the render form
-- [ ] Wire existing `text_watermark` / `text_overlay` filters into the render pipeline via job `settings`
-- [ ] Preset-aware placement so overlays don't collide with existing motion/vignette
-- [ ] Persist a producer's default tag so branding is one-click on every future render
+- [x] UI: producer tag field on the render form (`workspace.html`/`app.js`)
+- [x] Wire existing `text_watermark` filter into the render pipeline via job `settings` (`watermark_text`)
+- [x] Fix overlay collision: text tag and an uploaded watermark image both defaulted to bottom-right and stacked - text now moves to top-right when an image watermark is present
+- [x] Persist a producer's default tag via localStorage so branding is one-click on every future render
+- [ ] Timed `text_overlay` (lyrics/title hooks at specific timestamps) - not yet wired into the UI; deferred, closer to a Phase 4 concern than core branding
 
 **2.3 Distribution**
 - [ ] Code-sign + notarize the macOS `.app` (currently unsigned in `dist/`)
