@@ -37,6 +37,7 @@ class RenderingEngine:
         
         intensity = settings.get("intensity", "medium") if settings else "medium"
         duration_mode = settings.get("duration_mode", "full") if settings else "full"
+        tier = settings.get("tier", config.TIER_PRO) if settings else config.TIER_PRO
         
         # Duration from job metadata
         job = manager.get_job(job_id)
@@ -54,12 +55,17 @@ class RenderingEngine:
         fb.add(f"scale={w}:{h}:force_original_aspect_ratio=decrease")
         fb.add(f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:black")
         
-        if settings and settings.get("preset"):
-            fb.add(apply_effect_preset(settings["preset"], intensity=intensity, w=w, h=h, duration=render_duration))
-        
+        requested_preset = settings.get("preset") if settings else None
+        if requested_preset and (tier == config.TIER_PRO or requested_preset in config.FREE_TIER_PRESETS):
+            fb.add(apply_effect_preset(requested_preset, intensity=intensity, w=w, h=h, duration=render_duration))
+
         if settings and settings.get("watermark_text"):
             fb.add(text_watermark(settings["watermark_text"]))
-            
+
+        # Free tier always carries Audra branding, regardless of the user's own watermark settings
+        if tier == config.TIER_FREE:
+            fb.add(text_watermark(config.FREE_TIER_BRAND_TEXT, position="bottom-left"))
+
         filter_str = fb.build()
 
         # 3. Construct Command

@@ -53,3 +53,18 @@ MEMORY_LIMIT_MB = int(os.environ.get("AUDRA_MEMORY_LIMIT_MB", 2048))
 # --- Logging ---
 LOG_FILE = os.path.join(ROOT_DIR, 'audra.log')
 
+# --- Monetization Tiers ---
+TIER_FREE = "free"
+TIER_PRO = "pro"
+
+# Presets available without a Pro entitlement; the rest are Pro-only.
+FREE_TIER_PRESETS = {"ambient_drift", "cinematic_fade"}
+
+# Soft cap on Free tier renders. Process-lifetime counter (see queue_manager) -
+# not persisted across restarts. Good enough for the Phase 2 MVP; a real
+# per-user/per-day cap needs a persistent store once accounts exist.
+FREE_TIER_RENDER_CAP = int(os.environ.get("AUDRA_FREE_RENDER_CAP", 10))
+
+# Branding forced onto every Free tier render, regardless of user watermark settings.
+FREE_TIER_BRAND_TEXT = "Made with Audra"
+

@@ -25,3 +25,6 @@ test_render*.mp4
 build/
 dist/
 bin/
+
+# Local agent/tooling config (session-specific, not shared)
+.claude/settings.local.json

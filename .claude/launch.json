@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "audra-server",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["server.py"],
+      "port": 5050
+    }
+  ]
+}

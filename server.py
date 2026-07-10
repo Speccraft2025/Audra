@@ -2,7 +2,7 @@ import os
 import uuid
 import threading
 import json
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, g
 from flask_cors import CORS
 
 # Modular Audra Engine Imports
@@ -16,7 +16,7 @@ from audra.utils.monitoring import MonitoringService
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
-from audra.saas_auth import require_saas_auth
+from audra.saas_auth import attach_tier
 # ─── API Routes (Hardened & Modular) ────────────────────────────────────────
 
 @app.route('/')
@@ -28,13 +28,14 @@ def workspace():
     return send_file(os.path.join(config.BASE_DIR, 'workspace.html'))
 
 @app.route('/process', methods=['POST'])
-@require_saas_auth
+@attach_tier
 def process():
     """
     INGESTION LAYER triggered.
     Performs sanitization, validation, and normalization before queueing.
     """
     created_jobs = []
+    tier_blocked = []
     i = 0
     
     while f'audio_{i}' in request.files:
@@ -73,12 +74,19 @@ def process():
 
         for platform in platforms:
             for duration_mode in durations:
+                if g.audra_tier == config.TIER_FREE and not manager.can_render_free_tier():
+                    tier_blocked.append({
+                        "file": audio_file.filename, "platform": platform, "duration_mode": duration_mode
+                    })
+                    continue
+
                 job_id = str(uuid.uuid4())
-                
+
                 # Create a job-specific settings copy to override duration_mode
                 job_settings = settings.copy()
                 job_settings['duration_mode'] = duration_mode
-                
+                job_settings['tier'] = g.audra_tier
+
                 job_data = {
                     'id': job_id,
                     'name': audio_file.filename,
@@ -88,25 +96,32 @@ def process():
                     'progress': 0,
                     'duration': audio_meta['duration'],
                     'pair_id': pair_uuid,
-                    'engine_version': config.ENGINE_VERSION
+                    'engine_version': config.ENGINE_VERSION,
+                    'tier': g.audra_tier
                 }
-                
+
                 manager.add_job(job_data)
-                
+                if g.audra_tier == config.TIER_FREE:
+                    manager.record_free_tier_render()
+
                 # Start rendering thread
                 t = threading.Thread(
                     target=RenderingEngine.render_job,
-                    args=(job_id, repaired_audio, master_image_path, platform, 
-                          os.path.join(config.OUTPUT_DIR, f"{job_id}.mp4"), 
+                    args=(job_id, repaired_audio, master_image_path, platform,
+                          os.path.join(config.OUTPUT_DIR, f"{job_id}.mp4"),
                           job_settings, master_wm_path),
                     daemon=True
                 )
                 t.start()
                 created_jobs.append(job_id)
-        
+
         i += 1
-        
-    return jsonify({"jobs": created_jobs})
+
+    response = {"jobs": created_jobs}
+    if tier_blocked:
+        response["tier_limit_reached"] = tier_blocked
+        response["message"] = "Free tier render cap reached. Upgrade to Pro for unlimited renders."
+    return jsonify(response)
 
 @app.route('/jobs', methods=['GET'])
 def get_jobs():

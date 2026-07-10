@@ -1,48 +1,55 @@
-# ── saas_auth.py — Production-Grade SaaS Auth Middleware for Audra v2 ──
+# ── saas_auth.py — Entitlement Resolution for Audra v2 ──
 import os
 from functools import wraps
-from flask import request, jsonify
+from flask import request, g
+from audra import config
 
 # Read configurations from environment variables
 AUTH_ENABLED = os.environ.get("SAAS_AUTH_ENABLED", "false").lower() == "true"
 JWT_SECRET = os.environ.get("SAAS_JWT_SECRET", "default_secret_please_change")
 
-def require_saas_auth(f):
+
+def resolve_tier(req) -> str:
     """
-    Modular Flask decorator middleware to enforce license keys or user auth.
-    If SAAS_AUTH_ENABLED is false, it gracefully bypasses checks for local development.
+    Determines the entitlement tier for a request. Never blocks - an
+    unauthenticated or invalid request simply resolves to Free, matching the
+    subscription model (degrade to Free, don't deny service).
+
+    If SAAS_AUTH_ENABLED is false (default), everything resolves to Pro - this
+    is the local/desktop bypass, since a single-user desktop install has no
+    concept of a paywall.
+    """
+    if not AUTH_ENABLED:
+        return config.TIER_PRO
+
+    auth_header = req.headers.get("Authorization")
+    license_key = req.args.get("license_key") or req.form.get("license_key")
+
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        # Replace this with your standard JWT decoding logic
+        if token == JWT_SECRET:
+            return config.TIER_PRO
+
+    elif license_key:
+        # Replace this with your Lemon Squeezy or Stripe License check logic
+        # e.g., hitting https://api.lemonsqueezy.com/v1/licenses/validate
+        if license_key.startswith("AUDRA-PRO-"):
+            return config.TIER_PRO
+
+    return config.TIER_FREE
+
+
+def attach_tier(f):
+    """
+    Flask decorator that resolves the caller's entitlement tier and stashes it
+    on flask.g.audra_tier for the view to read. Route/engine logic is
+    responsible for enforcing tier restrictions (preset access, watermark,
+    render caps) - this decorator only resolves who the caller is.
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not AUTH_ENABLED:
-            # SaaS Authentication is disabled (e.g. running locally or on Desktop wrapper)
-            return f(*args, **kwargs)
-
-        # 1. Enforce checking headers or query parameters for a security token
-        auth_header = request.headers.get("Authorization")
-        license_key = request.args.get("license_key") or request.form.get("license_key")
-
-        # Validation Mock for SaaS Integration (Stripe or Lemon Squeezy validation stubs)
-        is_authorized = False
-
-        if auth_header and auth_header.startswith("Bearer "):
-            token = auth_header.split(" ")[1]
-            # Replace this with your standard JWT decoding logic
-            if token == JWT_SECRET:
-                is_authorized = True
-                
-        elif license_key:
-            # Replace this with your Lemon Squeezy or Stripe License check logic
-            # e.g., hitting https://api.lemonsqueezy.com/v1/licenses/validate
-            if license_key.startswith("AUDRA-PRO-"):
-                is_authorized = True
-
-        if not is_authorized:
-            return jsonify({
-                "status": "error",
-                "message": "🔒 Access Denied. A valid subscription or license key is required to render."
-            }), 401
-
+        g.audra_tier = resolve_tier(request)
         return f(*args, **kwargs)
     return decorated_function
 
