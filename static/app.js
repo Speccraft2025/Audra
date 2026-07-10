@@ -11,12 +11,15 @@ let imageFile = null;
 let activeJobIds = [];
 let pollTimer = null;
 
+const BRANDING_TAG_STORAGE_KEY = 'audra_branding_tag';
+
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initMultiToggle('#format-toggle', (vals) => selectedFormats = vals);
     initMultiToggle('#duration-toggle', (vals) => selectedDurations = vals);
     initPresetSelector();
     initUploadCards();
+    initBrandingTag();
     
     const renderBtn = document.getElementById('renderBtn');
     if (renderBtn) {
@@ -68,6 +71,18 @@ function initPresetSelector() {
             card.classList.add('active');
             selectedPreset = card.dataset.preset;
         });
+    });
+}
+
+function initBrandingTag() {
+    const input = document.getElementById('branding-tag-input');
+    if (!input) return;
+
+    const saved = localStorage.getItem(BRANDING_TAG_STORAGE_KEY);
+    if (saved) input.value = saved;
+
+    input.addEventListener('input', () => {
+        localStorage.setItem(BRANDING_TAG_STORAGE_KEY, input.value.trim());
     });
 }
 
@@ -144,6 +159,10 @@ async function submitRender() {
         preset: selectedPreset,
         intensity: document.getElementById('intensity-select').value
     };
+
+    const brandingTag = document.getElementById('branding-tag-input')?.value.trim();
+    if (brandingTag) settings.watermark_text = brandingTag;
+
     formData.append('settings_0', JSON.stringify(settings));
 
     try {

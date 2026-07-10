@@ -60,7 +60,9 @@ class RenderingEngine:
             fb.add(apply_effect_preset(requested_preset, intensity=intensity, w=w, h=h, duration=render_duration))
 
         if settings and settings.get("watermark_text"):
-            fb.add(text_watermark(settings["watermark_text"]))
+            # Image watermark (if present) occupies the default bottom-right corner - avoid stacking on it
+            text_wm_position = "top-right" if wm_image_path else "bottom-right"
+            fb.add(text_watermark(settings["watermark_text"], position=text_wm_position))
 
         # Free tier always carries Audra branding, regardless of the user's own watermark settings
         if tier == config.TIER_FREE:
