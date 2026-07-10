@@ -68,17 +68,17 @@ Constructs dynamic filter graphs based on user selection. It handles complex ope
 ### Phase 2: Desktop Product Launch (Next — the actual ship)
 Goal: a non-technical producer downloads Audra, activates a license, and publishes their first batch in under 5 minutes — entirely offline.
 
-**2.0 Technical debt / portability** (blocks everything below)
-- [ ] Fix hardcoded dev-machine font path in `audra/core/filters.py` → resolve via `config.BASE_DIR`
-- [ ] Add `build/`, `dist/` to `.gitignore`; stop tracking generated PyInstaller output
-- [ ] Add `psutil`, `pywebview` to `requirements.txt`
-- [ ] Resolve duplicate `saas_auth.py` (`audra/` vs `packaging/saas/`)
-- [ ] Commit the in-progress desktop/UI work in logical, reviewable chunks
+**2.0 Technical debt / portability** (blocks everything below) — Complete
+- [x] Fix hardcoded dev-machine font path in `audra/core/filters.py` → resolve via `config.BASE_DIR`
+- [x] Add `build/`, `dist/` to `.gitignore`; stop tracking generated PyInstaller output
+- [x] Add `psutil`, `pywebview` to `requirements.txt` (split `pywebview` into `requirements-desktop.txt`, since it breaks the headless Docker install)
+- [x] Resolve duplicate `saas_auth.py` (`audra/` vs `packaging/saas/`) — removed the dead `packaging/saas/` copy
+- [x] Commit the in-progress desktop/UI work in logical, reviewable chunks
 
 **2.1 Licensing & monetization rework**
-- [ ] Rework `saas_auth.py` from per-render license check → subscription entitlement check (validated once per launch/session)
-- [ ] Define Free / Pro tiers in `config.py` (render cap, preset access, watermark toggle)
-- [ ] Engine-level watermark enforcement for Free tier when no active Pro entitlement
+- [x] Rework `saas_auth.py` from a blocking per-render license check → non-blocking tier resolver (`resolve_tier`/`attach_tier`) that degrades to Free instead of 401ing
+- [x] Define Free / Pro tiers in `config.py` (`FREE_TIER_PRESETS`, `FREE_TIER_RENDER_CAP`, forced `FREE_TIER_BRAND_TEXT`)
+- [x] Engine-level enforcement: Free tier gates preset access and always carries the Audra watermark alongside any user watermark; verified end-to-end against a running server (preset gating, cap enforcement, license-key bypass to Pro)
 - [ ] Stripe or Lemon Squeezy hosted checkout → license key issuance (no in-app billing UI needed)
 
 **2.2 Flagship differentiator: branding & overlays**
