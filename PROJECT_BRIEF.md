@@ -89,7 +89,10 @@ Goal: a non-technical producer downloads Audra, activates a license, and publish
 - [ ] Timed `text_overlay` (lyrics/title hooks at specific timestamps) - not yet wired into the UI; deferred, closer to a Phase 4 concern than core branding
 
 **2.3 Distribution**
-- [ ] Code-sign + notarize the macOS `.app` (currently unsigned in `dist/`)
+- [x] Fix fatal bug: bundled app wrote user data inside the app bundle itself and crashed on the first render (`config.DATA_DIR` now resolves to a real per-OS user data dir when bundled)
+- [x] Build scripts now hard-fail instead of silently shipping without ffmpeg bundled
+- [ ] **Get real static (self-contained) ffmpeg/ffprobe binaries for distribution.** The build was verified locally with a copy of this machine's Homebrew ffmpeg, which is dynamically linked against Homebrew-only paths - fine for local testing, but will NOT run on an end user's machine. Needs genuine static builds in `bin/` before shipping.
+- [ ] Code-sign + notarize the macOS `.app` (currently ad-hoc signed in `dist/`)
 - [ ] Auto-update mechanism (Sparkle, or a simple version-check endpoint)
 - [ ] Landing page with demo reel + license purchase flow
 - [ ] Windows build pass (packaging scripts already stub `.ps1` — verify cross-platform ffmpeg bundling)
