@@ -24,21 +24,30 @@ Write-Host "📦 Verifying required compiler packages..." -ForegroundColor Cyan
 python -m pip install --upgrade pip
 pip install pywebview pyinstaller Pillow
 
-# 3. Warn about FFmpeg bundling if directory is empty
+# 3. Refuse to ship a build with no bundled FFmpeg - real end users almost
+#    never have FFmpeg installed at all, so an unbundled build is
+#    nonfunctional out of the box, not just "less portable."
 if (-not (Test-Path "bin\ffmpeg.exe") -or -not (Test-Path "bin\ffprobe.exe")) {
     Write-Host "==========================================================" -ForegroundColor Red
-    Write-Host "⚠️  WARNING: Precompiled static FFmpeg/FFprobe binaries not found for Windows!" -ForegroundColor Yellow
+    Write-Host "❌ BLOCKED: No bundled FFmpeg/FFprobe found in bin\" -ForegroundColor Yellow
     Write-Host "--------------------------------------------------------==" -ForegroundColor Red
-    Write-Host "Audra will compile successfully, but the resulting package" -ForegroundColor White
-    Write-Host "will rely on users having FFmpeg pre-installed on their system PATH." -ForegroundColor White
+    Write-Host "This build will compile without error but will NOT work for" -ForegroundColor White
+    Write-Host "real users - they will not have FFmpeg installed, and the app" -ForegroundColor White
+    Write-Host "has no fallback beyond an unqualified 'ffmpeg' PATH lookup." -ForegroundColor White
     Write-Host "" -ForegroundColor White
-    Write-Host "To build a truly portable package that has ZERO external requirements:" -ForegroundColor White
-    Write-Host "  1. Download precompiled static FFmpeg & FFprobe executables for Windows (64-bit)" -ForegroundColor White
-    Write-Host "  2. Create a folder named 'bin\' in the root directory: '$ProjectRoot\bin'" -ForegroundColor White
-    Write-Host "  3. Place the 'ffmpeg.exe' and 'ffprobe.exe' executables inside that 'bin\' folder" -ForegroundColor White
-    Write-Host "  4. Re-run this build script." -ForegroundColor White
+    Write-Host "To fix:" -ForegroundColor White
+    Write-Host "  1. Get STATIC (self-contained) FFmpeg & FFprobe .exe builds for" -ForegroundColor White
+    Write-Host "     Windows (64-bit) - not a copy of a locally installed FFmpeg," -ForegroundColor White
+    Write-Host "     which may depend on DLLs only present on your machine." -ForegroundColor White
+    Write-Host "  2. Place them at '$ProjectRoot\bin\ffmpeg.exe' and 'bin\ffprobe.exe'." -ForegroundColor White
+    Write-Host "  3. Re-run this build script." -ForegroundColor White
+    Write-Host "" -ForegroundColor White
+    Write-Host "Set `$env:AUDRA_ALLOW_UNBUNDLED_FFMPEG=1 to override and build anyway" -ForegroundColor White
+    Write-Host "(local testing only - do not ship this to real users)." -ForegroundColor White
     Write-Host "==========================================================" -ForegroundColor Red
-    Start-Sleep -Seconds 3
+    if (-not $env:AUDRA_ALLOW_UNBUNDLED_FFMPEG) {
+        exit 1
+    }
 }
 
 # 4. Trigger PyInstaller build process

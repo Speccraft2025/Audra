@@ -41,9 +41,28 @@ MAX_FILE_SIZE_MB = int(os.environ.get("AUDRA_MAX_FILE_SIZE_MB", 100))
 ALLOWED_EXTENSIONS_AUDIO = {'.mp3', '.wav', '.m4a', '.opus', '.ogg'}
 ALLOWED_EXTENSIONS_IMAGE = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 
+# --- Writable Data Directory ---
+# ROOT_DIR/BASE_DIR point at the app's *code* (inside Contents/Frameworks once
+# bundled, which is not a safe place to write user files). User data needs a
+# real writable, per-user location once packaged - the project root only
+# works in dev, where input/output already exist alongside the source.
+def _default_data_dir():
+    if not IS_BUNDLE:
+        return BASE_DIR
+    if sys.platform == 'darwin':
+        return os.path.join(os.path.expanduser('~/Library/Application Support'), 'Audra')
+    elif sys.platform.startswith('win'):
+        return os.path.join(os.environ.get('APPDATA', os.path.expanduser('~')), 'Audra')
+    else:
+        return os.path.join(os.path.expanduser('~/.local/share'), 'Audra')
+
+DATA_DIR = os.environ.get("AUDRA_DATA_DIR") or _default_data_dir()
+
 # --- Paths ---
-INPUT_DIR = os.path.join(ROOT_DIR, 'input')
-OUTPUT_DIR = os.path.join(ROOT_DIR, 'output')
+INPUT_DIR = os.path.join(DATA_DIR, 'input')
+OUTPUT_DIR = os.path.join(DATA_DIR, 'output')
+os.makedirs(INPUT_DIR, exist_ok=True)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # --- Processing Config ---
 CONCURRENCY_LIMIT = int(os.environ.get("AUDRA_CONCURRENCY_LIMIT", 2))
@@ -51,7 +70,7 @@ CPU_TARGET_PERCENT = float(os.environ.get("AUDRA_CPU_TARGET", 80.0))
 MEMORY_LIMIT_MB = int(os.environ.get("AUDRA_MEMORY_LIMIT_MB", 2048))
 
 # --- Logging ---
-LOG_FILE = os.path.join(ROOT_DIR, 'audra.log')
+LOG_FILE = os.path.join(DATA_DIR, 'audra.log')
 
 # --- Monetization Tiers ---
 TIER_FREE = "free"

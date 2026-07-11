@@ -25,21 +25,34 @@ echo "📦 Verifying required compiler packages..."
 pip install --upgrade pip
 pip install pywebview pyinstaller Pillow
 
-# 3. Warn about FFmpeg bundling if directory is empty
+# 3. Refuse to ship a build with no bundled FFmpeg - it will NOT work for
+#    real users. A double-clicked .app gets a minimal system PATH that does
+#    NOT include Homebrew (/opt/homebrew/bin), even if ffmpeg is on YOUR
+#    PATH right now in this terminal. Falling back to a bare "ffmpeg" lookup
+#    only appears to work when launched from a dev shell.
 if [ ! -f "bin/ffmpeg" ] && [ ! -f "bin/ffmpeg.exe" ]; then
     echo "=========================================================="
-    echo "⚠️  WARNING: Precompiled static FFmpeg binaries not found!"
+    echo "❌ BLOCKED: No bundled FFmpeg found in bin/"
     echo "--------------------------------------------------------=="
-    echo "Audra will compile successfully, but the resulting package"
-    echo "will rely on users having FFmpeg pre-installed on their system PATH."
+    echo "This build would look functional when launched from a terminal"
+    echo "(which inherits your shell's PATH) but FAIL for every real user"
+    echo "who double-clicks the app, because GUI-launched apps on macOS"
+    echo "get a minimal PATH that does not include Homebrew."
     echo ""
-    echo "To build a truly portable package that has ZERO external requirements:"
-    echo "  1. Download precompiled static FFmpeg & FFprobe executables for your OS"
-    echo "  2. Create a folder named 'bin/' in the root directory: '$PROJECT_ROOT/bin'"
-    echo "  3. Place the 'ffmpeg' and 'ffprobe' executables inside that 'bin/' folder"
-    echo "  4. Re-run this build script."
+    echo "To fix:"
+    echo "  1. Get STATIC (self-contained, no external .dylib deps) FFmpeg"
+    echo "     & FFprobe binaries for your OS - a plain 'cp \$(which ffmpeg)'"
+    echo "     is NOT sufficient, since Homebrew builds are dynamically"
+    echo "     linked against libraries only present on your own machine."
+    echo "  2. Place them at '$PROJECT_ROOT/bin/ffmpeg' and 'bin/ffprobe'."
+    echo "  3. Re-run this build script."
+    echo ""
+    echo "Set AUDRA_ALLOW_UNBUNDLED_FFMPEG=1 to override and build anyway"
+    echo "(local testing only - do not ship this to real users)."
     echo "=========================================================="
-    sleep 3
+    if [ -z "$AUDRA_ALLOW_UNBUNDLED_FFMPEG" ]; then
+        exit 1
+    fi
 fi
 
 # 4. Trigger PyInstaller build process
