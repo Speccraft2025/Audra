@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPresetSelector();
     initUploadCards();
     initBrandingTag();
+    initLicensePanel();
     
     const renderBtn = document.getElementById('renderBtn');
     if (renderBtn) {
@@ -83,6 +84,95 @@ function initBrandingTag() {
 
     input.addEventListener('input', () => {
         localStorage.setItem(BRANDING_TAG_STORAGE_KEY, input.value.trim());
+    });
+}
+
+// ── Licensing ──────────────────────────────────────────────────────────────
+
+async function initLicensePanel() {
+    const panel = document.getElementById('license-panel');
+    if (!panel) return;
+
+    const activateBtn = document.getElementById('license-activate-btn');
+    const deactivateBtn = document.getElementById('license-deactivate-btn');
+    const keyInput = document.getElementById('license-key-input');
+
+    if (activateBtn && keyInput) {
+        activateBtn.addEventListener('click', async () => {
+            activateBtn.disabled = true;
+            try {
+                const res = await fetch('/license/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_key: keyInput.value.trim() })
+                });
+                const data = await res.json();
+                const msgEl = document.getElementById('license-message');
+                if (msgEl) msgEl.textContent = data.message || '';
+                showToast(data.message || (res.ok ? 'Activated' : 'Activation failed'), res.ok ? 'success' : 'error');
+                renderLicenseState(data);
+            } catch (e) {
+                showToast('Could not reach the engine.', 'error');
+            } finally {
+                activateBtn.disabled = false;
+            }
+        });
+        keyInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') activateBtn.click(); });
+    }
+
+    if (deactivateBtn) {
+        deactivateBtn.addEventListener('click', async () => {
+            const res = await fetch('/license/deactivate', { method: 'POST' });
+            const data = await res.json();
+            showToast(data.message || 'Deactivated', 'info');
+            renderLicenseState(data);
+        });
+    }
+
+    try {
+        const res = await fetch('/license/status');
+        renderLicenseState(await res.json());
+    } catch (e) { /* engine unreachable; panel stays hidden */ }
+}
+
+function renderLicenseState(status) {
+    const panel = document.getElementById('license-panel');
+    if (!panel || !status || !status.enforced) return;
+
+    panel.style.display = '';
+    const isPro = status.tier === 'pro';
+    const freeView = document.getElementById('license-free-view');
+    const proView = document.getElementById('license-pro-view');
+    if (freeView) freeView.style.display = isPro ? 'none' : '';
+    if (proView) proView.style.display = isPro ? '' : 'none';
+
+    const keyHint = document.getElementById('license-key-hint');
+    if (keyHint) keyHint.textContent = status.key_hint || '';
+
+    const freeSummary = document.getElementById('license-free-summary');
+    if (freeSummary) {
+        const presetCount = (status.free_presets || []).length;
+        freeSummary.textContent = `${presetCount} presets, ${status.free_render_cap} renders per session`;
+    }
+
+    const buyLink = document.getElementById('license-buy-link');
+    if (buyLink && status.checkout_url) {
+        buyLink.href = status.checkout_url;
+        buyLink.style.display = '';
+    }
+
+    // Badge Pro-only presets so Free users see what a key unlocks.
+    const freeSet = new Set(status.free_presets || []);
+    document.querySelectorAll('.preset-card').forEach(card => {
+        const existing = card.querySelector('.pro-chip');
+        if (isPro || freeSet.has(card.dataset.preset)) {
+            if (existing) existing.remove();
+        } else if (!existing) {
+            const chip = document.createElement('span');
+            chip.className = 'pro-chip';
+            chip.textContent = 'PRO';
+            card.appendChild(chip);
+        }
     });
 }
 

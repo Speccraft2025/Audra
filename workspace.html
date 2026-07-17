@@ -135,6 +135,24 @@
             </div>
           </section>
 
+          <!-- ── License / Pro Upgrade (shown only when licensing is enforced) ── -->
+          <section class="section" id="license-panel" style="display:none">
+            <div class="step-label"><span class="step-num">★</span> License</div>
+            <div id="license-free-view" style="display:none">
+              <p class="section-sub">Free tier — <span id="license-free-summary"></span>. Renders carry the "Made with Audra" mark.</p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <input type="text" class="v2-input" id="license-key-input" placeholder="Paste your Pro license key" style="flex:1; min-width:220px;" autocomplete="off" spellcheck="false" />
+                <button class="toggle-btn" id="license-activate-btn" type="button">Activate</button>
+                <a id="license-buy-link" href="#" target="_blank" rel="noopener" style="display:none">Get Audra Pro →</a>
+              </div>
+              <p class="config-hint" id="license-message"></p>
+            </div>
+            <div id="license-pro-view" style="display:none">
+              <p class="section-sub">Pro active <span id="license-key-hint" style="opacity:0.6; font-family:'Space Mono',monospace;"></span> — all presets, no render cap, no Audra watermark.</p>
+              <button class="toggle-btn" id="license-deactivate-btn" type="button">Deactivate this machine</button>
+            </div>
+          </section>
+
           <!-- ── Render Action ── -->
           <section class="section render-section">
             <button class="render-btn" id="renderBtn" disabled>

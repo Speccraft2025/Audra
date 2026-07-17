@@ -87,3 +87,24 @@ FREE_TIER_RENDER_CAP = int(os.environ.get("AUDRA_FREE_RENDER_CAP", 10))
 # Branding forced onto every Free tier render, regardless of user watermark settings.
 FREE_TIER_BRAND_TEXT = "Made with Audra"
 
+# --- Lemon Squeezy Licensing ---
+# Store/product IDs pin license validation to Audra's own product, so a key
+# bought from another Lemon Squeezy store can't unlock Pro. Fill these in
+# after creating the store + product (see LEMONSQUEEZY_SETUP.md).
+LS_STORE_ID = os.environ.get("AUDRA_LS_STORE_ID", "")
+LS_PRODUCT_ID = os.environ.get("AUDRA_LS_PRODUCT_ID", "")
+# Hosted checkout link shown to Free tier users as the upgrade path.
+LS_CHECKOUT_URL = os.environ.get("AUDRA_LS_CHECKOUT_URL", "")
+
+# Local activation record (persists Pro across restarts, works offline).
+LICENSE_FILE = os.path.join(DATA_DIR, 'license.json')
+
+# Days a validated license stays Pro without reaching the license server.
+LICENSE_GRACE_DAYS = int(os.environ.get("AUDRA_LICENSE_GRACE_DAYS", 14))
+
+# Desktop licensing enforcement. Defaults ON in packaged builds (Free until a
+# key is activated) and OFF in dev, preserving the everything-is-Pro dev flow.
+LICENSING_ENABLED = os.environ.get(
+    "AUDRA_LICENSING_ENABLED", "true" if IS_BUNDLE else "false"
+).lower() == "true"
+

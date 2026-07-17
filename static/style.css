@@ -618,6 +618,22 @@ h1, h2, h3, .logo, .hero-title, .section-title, .showcase-name {
 .preset-name { font-size: 0.95rem; font-weight: 800; color: var(--text); }
 .preset-desc { font-size: 0.75rem; color: var(--text-muted); }
 
+.preset-card { position: relative; }
+.pro-chip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-family: 'Space Mono', monospace;
+  color: var(--bg);
+  background: var(--text);
+  border-radius: 4px;
+  padding: 2px 6px;
+  pointer-events: none;
+}
+
 .config-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

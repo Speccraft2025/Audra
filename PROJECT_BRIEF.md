@@ -79,7 +79,8 @@ Goal: a non-technical producer downloads Audra, activates a license, and publish
 - [x] Rework `saas_auth.py` from a blocking per-render license check → non-blocking tier resolver (`resolve_tier`/`attach_tier`) that degrades to Free instead of 401ing
 - [x] Define Free / Pro tiers in `config.py` (`FREE_TIER_PRESETS`, `FREE_TIER_RENDER_CAP`, forced `FREE_TIER_BRAND_TEXT`)
 - [x] Engine-level enforcement: Free tier gates preset access and always carries the Audra watermark alongside any user watermark; verified end-to-end against a running server (preset gating, cap enforcement, license-key bypass to Pro)
-- [ ] Stripe or Lemon Squeezy hosted checkout → license key issuance (no in-app billing UI needed)
+- [x] Lemon Squeezy license integration: activation/validation/deactivation against the LS License API (`audra/licensing.py`), machine-local activation with 14-day offline grace, `/license/*` endpoints, and a workspace activation panel with PRO preset badges. Verified against the live LS API + browser UI.
+- [ ] Account-side: create the Lemon Squeezy store + Audra Pro product, then fill in `AUDRA_LS_STORE_ID` / `AUDRA_LS_PRODUCT_ID` / `AUDRA_LS_CHECKOUT_URL` — see `LEMONSQUEEZY_SETUP.md` (requires identity/payout details, owner-only)
 
 **2.2 Flagship differentiator: branding & overlays**
 - [x] UI: producer tag field on the render form (`workspace.html`/`app.js`)

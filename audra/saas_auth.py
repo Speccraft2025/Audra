@@ -15,29 +15,36 @@ def resolve_tier(req) -> str:
     unauthenticated or invalid request simply resolves to Free, matching the
     subscription model (degrade to Free, don't deny service).
 
-    If SAAS_AUTH_ENABLED is false (default), everything resolves to Pro - this
-    is the local/desktop bypass, since a single-user desktop install has no
-    concept of a paywall.
+    Resolution order:
+    - SAAS mode (SAAS_AUTH_ENABLED=true, Phase 3 cloud): per-request Bearer
+      token or license_key param, validated against Lemon Squeezy.
+    - Desktop licensing (LICENSING_ENABLED, default in packaged builds): the
+      machine-local Lemon Squeezy activation decides the tier.
+    - Neither (dev): everything is Pro.
     """
-    if not AUTH_ENABLED:
-        return config.TIER_PRO
+    from audra import licensing
 
-    auth_header = req.headers.get("Authorization")
-    license_key = req.args.get("license_key") or req.form.get("license_key")
+    if AUTH_ENABLED:
+        auth_header = req.headers.get("Authorization")
+        license_key = req.args.get("license_key") or req.form.get("license_key")
 
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header.split(" ")[1]
-        # Replace this with your standard JWT decoding logic
-        if token == JWT_SECRET:
-            return config.TIER_PRO
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            # Replace this with your standard JWT decoding logic
+            if token == JWT_SECRET:
+                return config.TIER_PRO
 
-    elif license_key:
-        # Replace this with your Lemon Squeezy or Stripe License check logic
-        # e.g., hitting https://api.lemonsqueezy.com/v1/licenses/validate
-        if license_key.startswith("AUDRA-PRO-"):
-            return config.TIER_PRO
+        elif license_key:
+            valid, _err = licensing.validate_key_remote(license_key)
+            if valid:
+                return config.TIER_PRO
 
-    return config.TIER_FREE
+        return config.TIER_FREE
+
+    if config.LICENSING_ENABLED:
+        return licensing.current_tier()
+
+    return config.TIER_PRO
 
 
 def attach_tier(f):

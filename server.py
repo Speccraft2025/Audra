@@ -17,6 +17,7 @@ from audra.utils.monitoring import MonitoringService
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
 from audra.saas_auth import attach_tier
+from audra import licensing
 # ─── API Routes (Hardened & Modular) ────────────────────────────────────────
 
 @app.route('/')
@@ -122,6 +123,26 @@ def process():
         response["tier_limit_reached"] = tier_blocked
         response["message"] = "Free tier render cap reached. Upgrade to Pro for unlimited renders."
     return jsonify(response)
+
+@app.route('/license/status', methods=['GET'])
+def license_status():
+    return jsonify(licensing.status())
+
+@app.route('/license/activate', methods=['POST'])
+def license_activate():
+    payload = request.get_json(silent=True) or {}
+    ok, message = licensing.activate(payload.get('license_key', ''))
+    status_code = 200 if ok else 400
+    body = licensing.status()
+    body['message'] = message
+    return jsonify(body), status_code
+
+@app.route('/license/deactivate', methods=['POST'])
+def license_deactivate():
+    ok, message = licensing.deactivate()
+    body = licensing.status()
+    body['message'] = message
+    return jsonify(body), (200 if ok else 400)
 
 @app.route('/jobs', methods=['GET'])
 def get_jobs():
