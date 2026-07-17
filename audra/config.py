@@ -40,6 +40,7 @@ WATERMARK_FONT = os.path.join(BUNDLE_DIR, 'static', 'assets', 'ouroboros', 'font
 MAX_FILE_SIZE_MB = int(os.environ.get("AUDRA_MAX_FILE_SIZE_MB", 100))
 ALLOWED_EXTENSIONS_AUDIO = {'.mp3', '.wav', '.m4a', '.opus', '.ogg'}
 ALLOWED_EXTENSIONS_IMAGE = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+ALLOWED_EXTENSIONS_VIDEO = {'.mp4', '.mov', '.webm', '.m4v'}
 
 # --- Writable Data Directory ---
 # ROOT_DIR/BASE_DIR point at the app's *code* (inside Contents/Frameworks once
@@ -77,7 +78,13 @@ TIER_FREE = "free"
 TIER_PRO = "pro"
 
 # Presets available without a Pro entitlement; the rest are Pro-only.
-FREE_TIER_PRESETS = {"ambient_drift", "cinematic_fade"}
+FREE_TIER_PRESETS = {"ambient_drift", "cinematic_fade", "clean"}
+
+# Video backgrounds are a Pro entitlement — Free stays image-only. Looping and
+# re-encoding real footage costs far more CPU than a single looped still.
+VIDEO_SOURCE_REQUIRES_PRO = os.environ.get(
+    "AUDRA_VIDEO_REQUIRES_PRO", "true"
+).lower() == "true"
 
 # Soft cap on Free tier renders. Process-lifetime counter (see queue_manager) -
 # not persisted across restarts. Good enough for the Phase 2 MVP; a real

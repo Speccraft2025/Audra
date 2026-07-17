@@ -7,11 +7,61 @@ let selectedFormats = ['youtube'];
 let selectedDurations = ['full'];
 let selectedPreset = 'ambient_drift';
 let audioFile = null;
-let imageFile = null;
+let visualFile = null;
 let activeJobIds = [];
 let pollTimer = null;
+let licenseState = null;
 
 const BRANDING_TAG_STORAGE_KEY = 'audra_branding_tag';
+
+// Fallbacks used until /license/status answers (and if it never does).
+const DEFAULT_IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+const DEFAULT_VIDEO_EXTS = ['.mp4', '.mov', '.webm', '.m4v'];
+
+// ── Visual source helpers ──────────────────────────────────────────────────
+
+function imageExts() { return (licenseState && licenseState.image_extensions) || DEFAULT_IMAGE_EXTS; }
+function videoExts() { return (licenseState && licenseState.video_extensions) || DEFAULT_VIDEO_EXTS; }
+
+function isVideoFile(file) {
+    const name = file.name.toLowerCase();
+    return videoExts().some(ext => name.endsWith(ext));
+}
+
+/** Video is a Pro entitlement. Unknown or unenforced license state means Pro. */
+function videoAllowed() {
+    if (!licenseState || !licenseState.enforced) return true;
+    if (!licenseState.video_requires_pro) return true;
+    return licenseState.tier === 'pro';
+}
+
+function visualAccept() {
+    const exts = videoAllowed() ? imageExts().concat(videoExts()) : imageExts();
+    return exts.join(',');
+}
+
+/** Reflect the current entitlement on the artwork card, and drop a now-blocked video pick. */
+function updateVisualUploadHint() {
+    const hint = document.getElementById('image-hint');
+    const allowed = videoAllowed();
+    if (hint) {
+        hint.textContent = allowed ? 'Image or video loop' : 'Image — video loops need Pro';
+        hint.classList.toggle('locked', !allowed);
+    }
+
+    if (!allowed && visualFile && isVideoFile(visualFile)) {
+        visualFile = null;
+        const card = document.getElementById('image-upload');
+        if (card) {
+            card.classList.remove('filled');
+            const icon = card.querySelector('.upload-icon');
+            if (icon) icon.textContent = '🖼️';
+        }
+        const filenameEl = document.getElementById('image-filename');
+        if (filenameEl) filenameEl.textContent = 'No file selected';
+        updateRenderBtn();
+    }
+}
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -65,14 +115,20 @@ function initMultiToggle(selector, callback) {
 }
 
 function initPresetSelector() {
-    const cards = document.querySelectorAll('.preset-card');
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            cards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            selectedPreset = card.dataset.preset;
-        });
+    document.querySelectorAll('.preset-card').forEach(card => {
+        card.addEventListener('click', () => selectPreset(card.dataset.preset));
     });
+}
+
+function selectPreset(name) {
+    const cards = document.querySelectorAll('.preset-card');
+    let matched = false;
+    cards.forEach(c => {
+        const isMatch = c.dataset.preset === name;
+        c.classList.toggle('active', isMatch);
+        if (isMatch) matched = true;
+    });
+    if (matched) selectedPreset = name;
 }
 
 function initBrandingTag() {
@@ -136,6 +192,9 @@ async function initLicensePanel() {
 }
 
 function renderLicenseState(status) {
+    licenseState = status;
+    updateVisualUploadHint();
+
     const panel = document.getElementById('license-panel');
     if (!panel || !status || !status.enforced) return;
 
@@ -190,10 +249,23 @@ function initUploadCards() {
     });
 
     setupUpload(imageCard, 'image', (file) => {
-        imageFile = file;
+        const isVideo = isVideoFile(file);
+        if (isVideo && !videoAllowed()) {
+            showToast('Video backgrounds require Audra Pro. Activate a license to unlock.', 'error');
+            return;
+        }
+        visualFile = file;
         const filenameEl = document.getElementById('image-filename');
         if (filenameEl) filenameEl.textContent = truncate(file.name, 25);
         imageCard.classList.add('filled');
+        const iconEl = imageCard.querySelector('.upload-icon');
+        if (iconEl) iconEl.textContent = isVideo ? '🎬' : '🖼️';
+        // Motion presets fight footage that already moves — start clean and let
+        // the user opt back into motion if they want it.
+        if (isVideo && selectedPreset !== 'clean') {
+            selectPreset('clean');
+            showToast('Video loop detected — switched to the Clean preset.', 'info');
+        }
         updateRenderBtn();
     });
 }
@@ -202,7 +274,7 @@ function setupUpload(el, type, callback) {
     el.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = type === 'audio' ? '.mp3,.wav,.aiff,.m4a' : '.jpg,.jpeg,.png,.gif,.webp';
+        input.accept = type === 'audio' ? '.mp3,.wav,.aiff,.m4a' : visualAccept();
         input.onchange = () => { if (input.files[0]) callback(input.files[0]); };
         input.click();
     });
@@ -219,7 +291,7 @@ function setupUpload(el, type, callback) {
 function updateRenderBtn() {
     const btn = document.getElementById('renderBtn');
     const hint = document.getElementById('renderHint');
-    if (audioFile && imageFile && selectedFormats.length > 0 && selectedDurations.length > 0) {
+    if (audioFile && visualFile && selectedFormats.length > 0 && selectedDurations.length > 0) {
         btn.disabled = false;
         hint.textContent = `Ready: ${selectedFormats.length * selectedDurations.length} versions will be rendered`;
     } else {
@@ -231,7 +303,7 @@ function updateRenderBtn() {
 // ── Core Logic ─────────────────────────────────────────────────────────────
 
 async function submitRender() {
-    if (!audioFile || !imageFile) return;
+    if (!audioFile || !visualFile) return;
 
     const btn = document.getElementById('renderBtn');
     btn.disabled = true;
@@ -239,7 +311,7 @@ async function submitRender() {
 
     const formData = new FormData();
     formData.append('audio_0', audioFile);
-    formData.append('image_0', imageFile);
+    formData.append('image_0', visualFile);
     
     // Send comma-separated values for multi-processing
     formData.append('platforms_0', selectedFormats.join(','));
@@ -263,10 +335,15 @@ async function submitRender() {
             activeJobIds = data.jobs;
             startPolling();
             showToast(`🚀 ${data.jobs.length} renders started...`, 'success');
-            
+
             document.getElementById('render-progress-container').style.display = 'block';
             document.getElementById('renderHint').textContent = 'Rendering v2 Variants...';
             btn.textContent = 'Processing...';
+        } else {
+            // Rejected before any job was queued (tier gate, unreadable media).
+            showToast(data.error || data.message || 'Render request was rejected.', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Initialize v2 Render';
         }
     } catch (err) {
         showToast('❌ Server error', 'error');

@@ -26,8 +26,14 @@ class RenderingEngine:
             return 0
 
     @staticmethod
-    def render_job(job_id, audio_path, image_path, platform, output_path, settings=None, wm_image_path=None):
-        """Main rendering pipeline with non-blocking progress tracking and resource safety."""
+    def render_job(job_id, audio_path, visual_path, platform, output_path, settings=None,
+                   wm_image_path=None, visual_kind="image"):
+        """
+        Main rendering pipeline with non-blocking progress tracking and resource safety.
+
+        visual_kind is 'image' (a still, looped for the whole track) or 'video'
+        (a clip, looped end-to-end until the audio runs out).
+        """
         
         # 1. Platform & Intensity Configuration
         PLATFORMS = {
@@ -72,13 +78,20 @@ class RenderingEngine:
 
         # 3. Construct Command
         cmd = [config.FFMPEG_BINARY, '-y', '-threads', '0']
-        
-        # Seek in audio if 30s mode
+
+        # Input 0 — the background. A still is looped by the image demuxer; a
+        # clip is looped end-to-end by -stream_loop so short footage still
+        # covers a long track. Either way -t below trims to the audio.
+        if visual_kind == "video":
+            cmd += ['-stream_loop', '-1', '-i', visual_path]
+        else:
+            cmd += ['-framerate', '25', '-loop', '1', '-i', visual_path]
+
+        # Input 1 — the audio, seeked to the teaser start in 30s mode.
         if start_time > 0:
             cmd += ['-ss', str(start_time)]
-            
-        cmd += ['-framerate', '25', '-loop', '1', '-i', image_path, '-i', audio_path]
-        
+        cmd += ['-i', audio_path]
+
         if wm_image_path:
             cmd += ['-i', wm_image_path]
             wm_scale = 0.15

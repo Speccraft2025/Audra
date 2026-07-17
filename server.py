@@ -52,10 +52,21 @@ def process():
         platforms = [p.strip() for p in platforms_raw.split(',') if p.strip()]
 
         pair_uuid = str(uuid.uuid4())
-        
+
+        # The background may be a still or a video clip. Gate video on Pro
+        # before spending disk on the upload.
+        visual_kind = IngestionLayer.classify_visual(image_file.filename)
+        if (visual_kind == "video" and config.VIDEO_SOURCE_REQUIRES_PRO
+                and g.audra_tier != config.TIER_PRO):
+            return jsonify({
+                "error": "Video backgrounds require Audra Pro. Upload a still image, or activate a license.",
+                "file": image_file.filename,
+                "requires_pro": True
+            }), 403
+
         # 1. Ingestion & Validation
         master_audio_tmp = IngestionLayer.save_upload(audio_file, f"{pair_uuid}_a")
-        master_image_path = IngestionLayer.save_upload(image_file, f"{pair_uuid}_i")
+        master_visual_path = IngestionLayer.save_upload(image_file, f"{pair_uuid}_i")
         master_wm_path = None
         if wm_file:
             master_wm_path = IngestionLayer.save_upload(wm_file, f"{pair_uuid}_w")
@@ -65,6 +76,10 @@ def process():
         if not repaired_audio:
             # Cleanup and fail
             return jsonify({"error": audio_meta, "file": audio_file.filename}), 400
+
+        visual_ok, visual_meta = ValidationLayer.validate_visual(master_visual_path, kind=visual_kind)
+        if not visual_ok:
+            return jsonify({"error": visual_meta, "file": image_file.filename}), 400
 
         # 3. Create Jobs for each platform/duration combination
         platforms_raw = request.form.get(f'platforms_{i}', 'youtube')
@@ -98,7 +113,8 @@ def process():
                     'duration': audio_meta['duration'],
                     'pair_id': pair_uuid,
                     'engine_version': config.ENGINE_VERSION,
-                    'tier': g.audra_tier
+                    'tier': g.audra_tier,
+                    'visual_kind': visual_kind
                 }
 
                 manager.add_job(job_data)
@@ -108,9 +124,10 @@ def process():
                 # Start rendering thread
                 t = threading.Thread(
                     target=RenderingEngine.render_job,
-                    args=(job_id, repaired_audio, master_image_path, platform,
+                    args=(job_id, repaired_audio, master_visual_path, platform,
                           os.path.join(config.OUTPUT_DIR, f"{job_id}.mp4"),
                           job_settings, master_wm_path),
+                    kwargs={'visual_kind': visual_kind},
                     daemon=True
                 )
                 t.start()

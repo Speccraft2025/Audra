@@ -11,7 +11,7 @@ class ValidationLayer:
         try:
             cmd = [
                 config.FFPROBE_BINARY, "-v", "error", "-i", file_path,
-                "-show_entries", "format=duration:stream=duration,width,height,codec_name",
+                "-show_entries", "format=duration:stream=duration,width,height,codec_name,codec_type",
                 "-of", "json"
             ]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
@@ -71,3 +71,33 @@ class ValidationLayer:
             # For images, we just verify they can be read
             # Optional: normalize to a standard PNG/JPG if needed
             return file_path, metadata.get("format", {})
+
+    @staticmethod
+    def validate_visual(file_path, kind="image"):
+        """
+        Validate a background source (still image or video clip).
+        Returns (path, metadata) on success or (None, error_string) on failure.
+        """
+        metadata = ValidationLayer.probe_media(file_path)
+        if "error" in metadata:
+            return None, "Corrupt or unsupported media file."
+
+        # ffprobe reports codec_type 'video' for stills too (mjpeg/png/webp),
+        # so this one check covers both kinds: it rejects an .mp4 that carries
+        # only an audio stream just as it rejects a mislabelled non-media file.
+        video_streams = [
+            s for s in metadata.get("streams", [])
+            if s.get("codec_type") == "video"
+        ]
+        if not video_streams:
+            label = "video" if kind == "video" else "image"
+            return None, f"No usable {label} stream found in the uploaded file."
+
+        stream = video_streams[0]
+        return file_path, {
+            "kind": kind,
+            "width": stream.get("width"),
+            "height": stream.get("height"),
+            "codec": stream.get("codec_name"),
+            "duration": float(metadata.get("format", {}).get("duration") or 0),
+        }

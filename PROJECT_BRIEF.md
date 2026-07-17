@@ -1,6 +1,6 @@
 # Project Audra V2: Simplified Beat-to-Video Engine
 
-Audra is a high-performance video automation engine designed for music producers and content creators. It transforms audio tracks and static cover art into professional, platform-ready videos (YouTube and Social) using a curated preset system.
+Audra is a high-performance video automation engine designed for music producers and content creators. It transforms audio tracks and a background visual — either static cover art or a looping video clip — into professional, platform-ready videos (YouTube and Social) using a curated preset system.
 
 ## 🎯 Project Goal
 To provide a "one-click" workflow for generating high-impact music visualization videos, removing the need for complex editing software while maintaining premium aesthetic standards.
@@ -88,6 +88,8 @@ Goal: a non-technical producer downloads Audra, activates a license, and publish
 - [x] Fix overlay collision: text tag and an uploaded watermark image both defaulted to bottom-right and stacked - text now moves to top-right when an image watermark is present
 - [x] Persist a producer's default tag via localStorage so branding is one-click on every future render
 - [ ] Timed `text_overlay` (lyrics/title hooks at specific timestamps) - not yet wired into the UI; deferred, closer to a Phase 4 concern than core branding
+- [x] Video backgrounds (Pro): the artwork slot now accepts a looping video clip (`.mp4/.mov/.webm/.m4v`) as well as a still. Short clips loop end-to-end via `-stream_loop` to cover the full track; Free tier stays image-only (`VIDEO_SOURCE_REQUIRES_PRO`)
+- [x] `clean` preset (no motion, grade only) - auto-selected for video sources so preset motion doesn't fight movement already in the footage
 
 **2.3 Distribution**
 - [x] Fix fatal bug: bundled app wrote user data inside the app bundle itself and crashed on the first render (`config.DATA_DIR` now resolves to a real per-OS user data dir when bundled)

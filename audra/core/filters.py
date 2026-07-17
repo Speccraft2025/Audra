@@ -87,7 +87,15 @@ def apply_effect_preset(preset_name, intensity="medium", w=1920, h=1080, duratio
     # Mapping intensity to numerical values
     lv = {"low": 1, "medium": 2, "high": 3}.get(intensity, 2)
 
-    if preset_name == "ambient_drift":
+    if preset_name == "clean":
+        # No motion at all — for source footage that already moves. Grading
+        # only, so a preset never fights the movement already in the clip.
+        return ",".join([
+            "format=yuv420p",
+            f"eq=contrast={1.0 + (0.03 * lv)}:saturation={1.0 + (0.05 * lv)}"
+        ])
+
+    elif preset_name == "ambient_drift":
         # Scale up slightly and drift the crop window
         drift = 0.05 * lv
         filters = [

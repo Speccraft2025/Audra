@@ -232,4 +232,7 @@ def status():
         "checkout_url": config.LS_CHECKOUT_URL or None,
         "free_presets": sorted(config.FREE_TIER_PRESETS),
         "free_render_cap": config.FREE_TIER_RENDER_CAP,
+        "video_requires_pro": config.VIDEO_SOURCE_REQUIRES_PRO,
+        "image_extensions": sorted(config.ALLOWED_EXTENSIONS_IMAGE),
+        "video_extensions": sorted(config.ALLOWED_EXTENSIONS_VIDEO),
     }

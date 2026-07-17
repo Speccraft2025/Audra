@@ -61,6 +61,7 @@
               <div class="upload-card" id="image-upload">
                 <div class="upload-icon">🖼️</div>
                 <div class="upload-text">Select Artwork</div>
+                <div class="upload-hint" id="image-hint">Image or video loop</div>
                 <div class="upload-filename" id="image-filename">No file selected</div>
               </div>
             </div>
@@ -84,6 +85,10 @@
               <div class="config-group">
                 <label class="config-label">Visual Preset</label>
                 <div class="preset-grid" id="preset-selector">
+                  <button class="preset-card" data-preset="clean">
+                    <div class="preset-name">Clean</div>
+                    <div class="preset-desc">No Motion, Grade Only</div>
+                  </button>
                   <button class="preset-card active" data-preset="ambient_drift">
                     <div class="preset-name">Ambient Drift</div>
                     <div class="preset-desc">Dreamy & Slow</div>

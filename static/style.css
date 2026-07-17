@@ -552,6 +552,8 @@ h1, h2, h3, .logo, .hero-title, .section-title, .showcase-name {
 .upload-icon { font-size: 2.5rem; opacity: 0.8; }
 .upload-text { font-size: 1rem; font-weight: 700; color: var(--text); }
 .upload-filename { font-size: 0.8rem; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+.upload-hint { font-size: 0.75rem; color: var(--text-muted); opacity: 0.75; }
+.upload-hint.locked { opacity: 0.55; font-style: italic; }
 
 .config-grid {
   display: flex;
