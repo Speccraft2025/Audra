@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audra — Turn Beats Into Videos, Automatically</title>
+  <meta name="description" content="Audra renders professional, platform-ready videos from your beats and cover art in one click. YouTube 16:9, TikTok 9:16, and teaser cuts — no editor required." />
+  <meta property="og:title" content="Audra — Turn Beats Into Videos, Automatically" />
+  <meta property="og:description" content="Drop a beat and a cover. Get YouTube, TikTok, and teaser videos back in minutes. Built for producers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <!-- ── Ambient Background ── -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-asset">
+          <img src="/assets/logo.png" alt="Audra Technology" />
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#how" class="nav-link">How It Works</a>
+        <a href="#presets" class="nav-link">Presets</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#beta" class="nav-link nav-btn">Join the Beta</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- ── Hero ── -->
+    <section class="hero-section" id="hero">
+      <div class="hero-content">
+        <div class="hero-badge">Now in Closed Beta — macOS Desktop App</div>
+        <h1 class="hero-title">Turn Beats Into <span class="gradient-text">Videos</span>. Automatically.</h1>
+        <p class="hero-subtitle">Drop a beat and a cover. Audra renders polished, platform-ready videos — YouTube landscape, TikTok vertical, and a high-energy teaser cut — in one click. No timeline, no editor, no uploads to some cloud queue. It runs on your machine.</p>
+        <div class="hero-actions">
+          <a href="#beta" class="hero-btn primary-glow">Join the Beta</a>
+          <a href="#presets" class="hero-btn secondary">Explore Presets</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Demo Reel ── -->
+    <!-- To swap in a real demo reel: drop demo.mp4 into site/assets/ and replace
+         the .demo-mock div below with:
+         <video class="demo-video" src="/assets/demo.mp4" autoplay muted loop playsinline></video> -->
+    <section class="demo-section" id="demo">
+      <div class="demo-frame">
+        <div class="demo-chrome">
+          <span class="demo-dot"></span><span class="demo-dot"></span><span class="demo-dot"></span>
+          <span class="demo-title">audra — render queue</span>
+        </div>
+        <div class="demo-mock">
+          <div class="demo-cover">
+            <div class="demo-cover-art">♪</div>
+          </div>
+          <div class="demo-meta">
+            <div class="demo-track">midnight-drive_140bpm.wav</div>
+            <div class="demo-bars">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="demo-outputs">
+              <span class="demo-chip">16:9 YouTube ✓</span>
+              <span class="demo-chip">9:16 TikTok ✓</span>
+              <span class="demo-chip">0:30 Teaser ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How It Works ── -->
+    <section class="features-section" id="how">
+      <div class="section-header">
+        <div class="step-label"><span class="step-num">01–03</span> How It Works</div>
+        <h2 class="section-title">One Upload. Every Format.</h2>
+        <p class="section-desc">Audra was built for producers who'd rather make the next beat than fight a video editor.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎧</div>
+          <h3 class="feature-name">1 — Drop Your Beat & Cover</h3>
+          <p class="feature-desc">Any common audio format, plus your cover art — a still image, or a looping video clip on Pro. Audra probes, repairs, and normalizes everything on ingest so renders never fail halfway through.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎛️</div>
+          <h3 class="feature-name">2 — Pick a Preset & Platform</h3>
+          <p class="feature-desc">Choose a visual preset that matches the energy of the track, then select your targets: full-length 16:9 for YouTube, vertical 9:16 for TikTok and Shorts, and an auto-cut 30-second teaser.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3 class="feature-name">3 — Render & Post</h3>
+          <p class="feature-desc">All variants render simultaneously from a single master upload, powered by low-level FFmpeg filter graphs — not a cloud queue. Your files stay on your machine, ready to post.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Presets ── -->
+    <section class="presets-section" id="presets">
+      <div class="section-header">
+        <div class="step-label"><span class="step-num">presets</span> Visual Preset Suite</div>
+        <h2 class="section-title">Cinematic Atmosphere, Automated</h2>
+        <p class="section-desc">Every preset is a hand-tuned chain of drift, zoom, grade, and grain filters designed to keep static cover art alive for the full length of a track.</p>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">🌌</div>
+          <h3 class="showcase-name">Ambient Drift</h3>
+          <p class="showcase-desc">Smooth slow-motion crop translation paired with a warm cinematic vintage color grade. Dreamy, nostalgic, and atmospheric.</p>
+          <span class="showcase-badge">Cinematic · Free</span>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">🎭</div>
+          <h3 class="showcase-name">Cinematic Fade</h3>
+          <p class="showcase-desc">Moody and clean low-contrast shifts. Slow, rhythmic focus drifts coupled with automated fade-in and fade-out effects.</p>
+          <span class="showcase-badge">Moody · Free</span>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">🥁</div>
+          <h3 class="showcase-name">Trap Pulse</h3>
+          <p class="showcase-desc">High-impact beat-synced scaling built on expansion filters over time. Perfect for heavy bass and modern electronic tracks.</p>
+          <span class="showcase-badge">High Energy · Pro</span>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">☀️</div>
+          <h3 class="showcase-name">Afro Glow</h3>
+          <p class="showcase-desc">Warm, vibrant saturation balances paired with gentle breathing movements. Captures acoustic and atmospheric vibes.</p>
+          <span class="showcase-badge">Warm & Vibrant · Pro</span>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">💥</div>
+          <h3 class="showcase-name">Hard Cut Energy</h3>
+          <p class="showcase-desc">High-frequency shake and jitter matched with subtle film grain. For fast-paced, aggressive, or chaotic soundscapes.</p>
+          <span class="showcase-badge">Aggressive · Pro</span>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-glow"></div>
+          <div class="showcase-icon">🎬</div>
+          <h3 class="showcase-name">Clean</h3>
+          <p class="showcase-desc">No motion — just the grade. Auto-selected for video backgrounds so preset movement never fights footage that already moves.</p>
+          <span class="showcase-badge">Minimal · Free</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Pricing ── -->
+    <section class="pricing-section" id="pricing">
+      <div class="section-header">
+        <div class="step-label"><span class="step-num">pricing</span> Simple & Local-First</div>
+        <h2 class="section-title">Pay Once. Own It.</h2>
+        <p class="section-desc">No subscription. Audra Pro is a perpetual license — buy it once, use it on two machines.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3 class="pricing-tier">Free</h3>
+          <div class="pricing-price">$0</div>
+          <p class="pricing-tagline">Everything you need to try the workflow.</p>
+          <ul class="pricing-list">
+            <li>✓ Full render engine — 16:9, 9:16 & teaser cuts</li>
+            <li>✓ Ambient Drift, Cinematic Fade & Clean presets</li>
+            <li>✓ Still-image cover art backgrounds</li>
+            <li>· "Made with Audra" branding on renders</li>
+            <li>· Capped renders per session</li>
+          </ul>
+          <a href="#beta" class="hero-btn secondary pricing-btn">Join the Beta</a>
+        </div>
+        <div class="pricing-card pricing-featured">
+          <div class="pricing-flag">Launch Pricing</div>
+          <h3 class="pricing-tier">Pro</h3>
+          <div class="pricing-price">$59 <span class="pricing-period">one-time</span></div>
+          <p class="pricing-tagline">For producers shipping beats every week.</p>
+          <ul class="pricing-list">
+            <li>✓ Everything in Free, uncapped</li>
+            <li>✓ All visual presets, including beat-synced motion</li>
+            <li>✓ Looping video backgrounds (.mp4/.mov/.webm)</li>
+            <li>✓ No watermark — your brand only</li>
+            <li>✓ Perpetual license · 2 machine activations</li>
+          </ul>
+          <!-- When the Lemon Squeezy store is live, point this at the Buy link
+               (https://<store>.lemonsqueezy.com/checkout/buy/<uuid>) and change
+               the label to "Buy Audra Pro". -->
+          <a href="#beta" class="hero-btn primary-glow pricing-btn">Get Pro at Launch</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Beta Signup ── -->
+    <section class="beta-section" id="beta">
+      <div class="beta-card">
+        <div class="section-header beta-header">
+          <div class="step-label"><span class="step-num">beta</span> Closed Beta</div>
+          <h2 class="section-title">Get Early Access</h2>
+          <p class="section-desc">We're onboarding a small group of producers before launch. Beta testers get the desktop app first — and a discount on Pro when it ships.</p>
+        </div>
+        <form name="beta" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field" class="beta-form">
+          <input type="hidden" name="form-name" value="beta" />
+          <p class="hidden-field"><label>Don't fill this out: <input name="bot-field" /></label></p>
+          <div class="beta-row">
+            <input type="email" name="email" required placeholder="you@example.com" class="beta-input" aria-label="Email address" />
+            <button type="submit" class="hero-btn primary-glow beta-submit">Request Access</button>
+          </div>
+          <input type="text" name="handle" placeholder="Producer name / YouTube channel (optional)" class="beta-input beta-input-wide" aria-label="Producer name or channel" />
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-brand">Audra Technology</span>
+      <span class="footer-copy">© 2026 Spec Craft Media Ltd. All rights reserved.</span>
+    </div>
+  </footer>
+
+</body>
+</html>

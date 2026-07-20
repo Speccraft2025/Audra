@@ -1,0 +1,13 @@
+# Netlify config for the Audra public landing page.
+# Only the site/ folder is published — the Flask app, engine code, and build
+# artifacts in this repo are never deployed.
+
+[build]
+  publish = "site"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
