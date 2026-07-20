@@ -97,7 +97,7 @@ Goal: a non-technical producer downloads Audra, activates a license, and publish
 - [ ] **Get real static (self-contained) ffmpeg/ffprobe binaries for distribution.** The build was verified locally with a copy of this machine's Homebrew ffmpeg, which is dynamically linked against Homebrew-only paths - fine for local testing, but will NOT run on an end user's machine. Needs genuine static builds in `bin/` before shipping.
 - [ ] Code-sign + notarize the macOS `.app` (currently ad-hoc signed in `dist/`)
 - [ ] Auto-update mechanism (Sparkle, or a simple version-check endpoint)
-- [ ] Landing page with demo reel + license purchase flow
+- [x] Landing page — live at <https://audra-technology.netlify.app> (`site/`, deployed via Netlify CLI; beta-waitlist Netlify Form wired). Still pending: real demo reel (placeholder mock in `site/index.html`), and pointing the Pro button at the Lemon Squeezy buy link once the store exists
 - [ ] Windows build pass (packaging scripts already stub `.ps1` — verify cross-platform ffmpeg bundling)
 
 **2.4 Validation**

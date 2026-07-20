@@ -31,3 +31,6 @@ bin/
 
 # Local agent/tooling config (session-specific, not shared)
 .claude/settings.local.json
+
+# Local Netlify folder
+.netlify
