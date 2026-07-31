@@ -1,0 +1,14 @@
+{
+  "name": "audra-desktop",
+  "private": true,
+  "version": "2.0.1",
+  "scripts": {
+    "tauri": "tauri",
+    "tauri:prepare": "bash packaging/tauri/prepare_sidecar.sh",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0"
+  }
+}

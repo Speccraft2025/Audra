@@ -34,7 +34,10 @@ class IngestionLayer:
     @staticmethod
     def classify_visual(filename: str) -> str:
         """Returns 'video' or 'image' for a background source upload."""
-        return "video" if IngestionLayer.is_allowed_video(filename) else "image"
+        # Animated GIFs need the looping video-input path rather than image2's
+        # still-frame -loop option.
+        suffix = Path(filename).suffix.lower()
+        return "video" if IngestionLayer.is_allowed_video(filename) or suffix == '.gif' else "image"
 
     @staticmethod
     def save_upload(file_storage, prefix: str) -> str:

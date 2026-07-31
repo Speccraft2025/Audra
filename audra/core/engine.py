@@ -53,7 +53,15 @@ class RenderingEngine:
         render_duration = raw_duration
         
         if duration_mode == "30s":
-            start_time = RenderingEngine.get_high_energy_start(audio_path, raw_duration)
+            requested_start = settings.get("clip_start") if settings else None
+            if requested_start is None:
+                start_time = RenderingEngine.get_high_energy_start(audio_path, raw_duration)
+            else:
+                try:
+                    start_time = float(requested_start)
+                except (TypeError, ValueError):
+                    start_time = 0
+                start_time = max(0, min(start_time, max(0, raw_duration - 30.0)))
             render_duration = min(30.0, raw_duration - start_time)
 
         # 2. Build Filter Graph
@@ -69,6 +77,21 @@ class RenderingEngine:
             # Image watermark (if present) occupies the default bottom-right corner - avoid stacking on it
             text_wm_position = "top-right" if wm_image_path else "bottom-right"
             fb.add(text_watermark(settings["watermark_text"], position=text_wm_position))
+
+        # Synced lyrics are stored against absolute audio timestamps. Shift
+        # them into the local render timeline for a selected 30-second clip.
+        if settings:
+            for lyric in settings.get("timed_lyrics", []):
+                try:
+                    lyric_start = float(lyric.get("start", 0)) - start_time
+                    lyric_end = float(lyric.get("end", lyric_start + 3)) - start_time
+                except (TypeError, ValueError, AttributeError):
+                    continue
+                local_start = max(0, lyric_start)
+                local_end = min(render_duration, lyric_end)
+                text = str(lyric.get("text", "")).strip()
+                if text and local_end > local_start:
+                    fb.add(text_overlay(text, local_start, local_end, position="center", fontsize=48))
 
         # Free tier always carries Audra branding, regardless of the user's own watermark settings
         if tier == config.TIER_FREE:

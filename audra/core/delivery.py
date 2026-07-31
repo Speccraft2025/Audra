@@ -20,13 +20,15 @@ class DeliveryLayer:
     @staticmethod
     def prepare_download(filename):
         """Hardened delivery with MIME enforcement and integrity headers."""
+        filename = os.path.basename(filename)
         file_path = os.path.join(config.OUTPUT_DIR, filename)
         if not os.path.exists(file_path):
             return jsonify({"error": "File not found", "code": "DELIVERY_ERROR"}), 404
 
         # Strict sanitization
         safe_name = re.sub(r'[^a-zA-Z0-9._-]', '_', filename)
-        if not safe_name.endswith('.mp4'):
+        is_zip = safe_name.lower().endswith('.zip')
+        if not is_zip and not safe_name.lower().endswith('.mp4'):
             safe_name += '.mp4'
 
         # Calculate integrity hash
@@ -34,14 +36,14 @@ class DeliveryLayer:
 
         response = make_response(send_file(
             file_path,
-            mimetype='video/mp4',
+            mimetype='application/zip' if is_zip else 'video/mp4',
             as_attachment=True,
             download_name=safe_name
         ))
 
         # Delivery Hardening
         response.headers["Content-Disposition"] = f"attachment; filename=\"{safe_name}\""
-        response.headers["Content-Type"] = "video/mp4"
+        response.headers["Content-Type"] = "application/zip" if is_zip else "video/mp4"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Audra-Integrity"] = file_hash or "unavailable"
         response.headers["X-Audra-Engine-Version"] = config.ENGINE_VERSION

@@ -17,6 +17,7 @@ input/*
 !input/.gitkeep
 output/*
 !output/.gitkeep
+projects/
 
 # IDEs
 .vscode/
@@ -28,6 +29,11 @@ test_render*.mp4
 build/
 dist/
 bin/
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+src-tauri/binaries/*
+!src-tauri/binaries/.gitkeep
 
 # Local agent/tooling config (session-specific, not shared)
 .claude/settings.local.json

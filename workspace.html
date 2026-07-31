@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
-  <link rel="stylesheet" href="/static/style.css?v=1.3" />
+  <link rel="stylesheet" href="/static/style.css?v=2.3" />
 </head>
 <body>
 
@@ -44,13 +44,20 @@
       <div class="workspace-card-wrapper">
         <div class="workspace-card-header">
           <div class="workspace-header-title">Audra Rendering Core Workspace</div>
-          <div class="workspace-header-badge">Control Console</div>
+          <div class="project-toolbar">
+            <button class="project-toolbar-btn" id="open-project-btn" type="button">Open Project</button>
+            <button class="project-toolbar-btn primary" id="save-project-btn" type="button">Save Project</button>
+            <div class="workspace-header-badge">Control Console</div>
+          </div>
         </div>
         
         <div class="workspace-card-body">
           <!-- ── Step 1: Media Ingestion ── -->
           <section class="section" id="step-upload">
-            <div class="step-label"><span class="step-num">01</span> Upload Media</div>
+            <div class="section-heading-row">
+              <div class="step-label"><span class="step-num">01</span> Upload Media</div>
+              <button class="add-content-btn" id="add-content-btn" type="button">＋ Add another</button>
+            </div>
             <p class="section-sub">Drop your beat and artwork below.</p>
             <div class="upload-zone-v2">
               <div class="upload-card" id="audio-upload">
@@ -61,10 +68,11 @@
               <div class="upload-card" id="image-upload">
                 <div class="upload-icon">🖼️</div>
                 <div class="upload-text">Select Artwork</div>
-                <div class="upload-hint" id="image-hint">Image or video loop</div>
+                <div class="upload-hint" id="image-hint">Image, GIF or video loop</div>
                 <div class="upload-filename" id="image-filename">No file selected</div>
               </div>
             </div>
+            <div class="content-editor-list" id="content-editor-list"></div>
           </section>
 
           <!-- ── Step 2: Format & Preset ── -->
@@ -81,47 +89,8 @@
                 </div>
               </div>
 
-              <!-- Presets -->
-              <div class="config-group">
-                <label class="config-label">Visual Preset</label>
-                <div class="preset-grid" id="preset-selector">
-                  <button class="preset-card" data-preset="clean">
-                    <div class="preset-name">Clean</div>
-                    <div class="preset-desc">No Motion, Grade Only</div>
-                  </button>
-                  <button class="preset-card active" data-preset="ambient_drift">
-                    <div class="preset-name">Ambient Drift</div>
-                    <div class="preset-desc">Dreamy & Slow</div>
-                  </button>
-                  <button class="preset-card" data-preset="trap_pulse">
-                    <div class="preset-name">Trap Pulse</div>
-                    <div class="preset-desc">Beat-Synced Scale</div>
-                  </button>
-                  <button class="preset-card" data-preset="cinematic_fade">
-                    <div class="preset-name">Cinematic Fade</div>
-                    <div class="preset-desc">Moody & Professional</div>
-                  </button>
-                  <button class="preset-card" data-preset="afro_glow">
-                    <div class="preset-name">Afro Glow</div>
-                    <div class="preset-desc">Warm & Vibrant</div>
-                  </button>
-                  <button class="preset-card" data-preset="hard_cut_energy">
-                    <div class="preset-name">Hard Cut</div>
-                    <div class="preset-desc">Aggressive Shake</div>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Intensity & Duration -->
+              <!-- Duration -->
               <div class="config-row">
-                <div class="config-group">
-                  <label class="config-label">Visual Intensity</label>
-                  <select class="v2-select" id="intensity-select">
-                    <option value="low">Low</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="high">High</option>
-                  </select>
-                </div>
                 <div class="config-group">
                   <label class="config-label">Render Duration</label>
                   <div class="toggle-group" id="duration-toggle">
@@ -130,12 +99,13 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Branding -->
-              <div class="config-group">
-                <label class="config-label">Your Tag / Branding</label>
-                <input type="text" class="v2-input" id="branding-tag-input" placeholder="e.g. @yourhandle or prod. by You" maxlength="60" />
-                <p class="config-hint">Burned into every render. Saved for next time. Free tier renders also carry a small "Made with Audra" mark.</p>
+              <div class="clip-range-panel" id="clip-range-panel" hidden>
+                <div class="clip-range-head">
+                  <label class="config-label" for="clip-start-range">30-second audio section</label>
+                  <span id="clip-range-label">00:00 – 00:30</span>
+                </div>
+                <input type="range" id="clip-start-range" min="0" max="0" value="0" step="0.1" />
+                <p class="config-hint">Move the slider to choose where the 30-second version begins.</p>
               </div>
             </div>
           </section>
@@ -220,10 +190,43 @@
 
   </main>
 
+  <div class="lyrics-modal" id="lyrics-modal" hidden>
+    <div class="lyrics-modal-backdrop" data-close-lyrics></div>
+    <section class="lyrics-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="lyrics-modal-title">
+      <div class="lyrics-modal-head">
+        <div>
+          <div class="step-label" id="lyrics-modal-title">Sync Lyrics</div>
+          <p class="config-hint">Paste one lyric line per row. Start playback, then tap Space when each line should appear.</p>
+        </div>
+        <button class="content-remove-btn" type="button" data-close-lyrics>Close</button>
+      </div>
+      <textarea class="v2-input lyrics-textarea" id="lyrics-textarea" placeholder="First lyric line&#10;Second lyric line&#10;Third lyric line"></textarea>
+      <div class="lyrics-sync-status" id="lyrics-sync-status">Paste lyrics to begin.</div>
+      <div class="lyrics-modal-actions">
+        <button class="toggle-btn" id="lyrics-start-btn" type="button">▶ Start syncing</button>
+        <button class="toggle-btn active" id="lyrics-save-btn" type="button" disabled>Save synced lyrics</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="lyrics-modal" id="project-modal" hidden>
+    <div class="lyrics-modal-backdrop" data-close-project></div>
+    <section class="lyrics-modal-dialog project-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+      <div class="lyrics-modal-head">
+        <div>
+          <div class="step-label" id="project-modal-title">Open Project</div>
+          <p class="config-hint">Reopen a saved project, make changes, and render new versions.</p>
+        </div>
+        <button class="content-remove-btn" type="button" data-close-project>Close</button>
+      </div>
+      <div class="project-list" id="project-list">Loading projects…</div>
+    </section>
+  </div>
+
   <!-- ── Hidden file inputs ── -->
   <input type="file" id="globalAudioInput" accept=".mp3,.wav,.aiff,.m4a" multiple style="display:none" />
-  <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" style="display:none" />
+  <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" multiple style="display:none" />
 
-  <script src="/static/app.js?v=2.0"></script>
+  <script src="/static/app.js?v=2.4"></script>
 </body>
 </html>
