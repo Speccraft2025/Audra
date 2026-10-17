@@ -97,7 +97,7 @@ if __name__ == '__main__':
     print("🎬 Opening Audra Desktop GUI frame...")
     api = DesktopAPI()
     window = webview.create_window(
-        title="Audra Technology — Desktop Beat-to-Video Engine",
+        title="Audra — Audio to Video",
         url=f"http://127.0.0.1:{port}/workspace",
         width=1280,
         height=800,

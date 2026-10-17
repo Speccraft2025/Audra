@@ -45,7 +45,7 @@ fn main() {
                                 "main",
                                 WebviewUrl::External(url),
                             )
-                            .title("Audra Technology — Beat-to-Video Engine")
+                            .title("Audra — Audio to Video")
                             .inner_size(1280.0, 820.0)
                             .min_inner_size(1024.0, 720.0)
                             .resizable(true)
