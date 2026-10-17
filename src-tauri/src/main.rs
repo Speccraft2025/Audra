@@ -27,6 +27,9 @@ fn main() {
                 .sidecar("audra-engine")?
                 .env("AUDRA_HOST", "127.0.0.1")
                 .env("AUDRA_PORT", port.to_string())
+                // This is the owner's local desktop build. Customer builds
+                // should set this to true in their distribution config.
+                .env("AUDRA_LICENSING_ENABLED", "false")
                 .spawn()?;
 
             app.manage(EngineState(Mutex::new(Some(child))));
