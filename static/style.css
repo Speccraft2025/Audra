@@ -1748,6 +1748,12 @@ body.studio-app { background:
 @keyframes render-spin { to { transform:rotate(360deg); } }
 @media (prefers-reduced-motion:reduce) { .studio-app .render-orbit,.studio-app .render-orbit i,.studio-app .render-progress-fill::after,.studio-app .button-spinner { animation-duration:3s; } }
 .studio-app .render-dock .render-btn { min-width:154px; min-height:42px; margin:0; padding:11px 17px; font-size:.72rem; }
+.studio-app .save-project-dialog { width:min(460px,100%); }
+.studio-app .save-project-label { display:block; margin:24px 0 7px; color:#dce7e9; font-size:.7rem; font-weight:700; }
+.studio-app .save-project-dialog .v2-input { width:100%; padding:12px; border-radius:8px; }
+.studio-app .save-project-requirement { margin-top:8px; color:#95a8b8; font-size:.66rem; }
+.studio-app .save-project-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:22px; }
+.studio-app .save-project-actions .topbar-button:disabled { cursor:not-allowed; opacity:.42; }
 .studio-app .studio-nav-item .nav-symbol { flex:0 0 28px; }
 @media (max-width:1200px) {
   .studio-app .studio-sidebar { width:176px; padding:20px 10px; }

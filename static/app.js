@@ -591,22 +591,55 @@ function saveLyricsSync() {
 }
 
 function initProjectControls() {
-    document.getElementById('save-project-btn')?.addEventListener('click', saveProject);
+    document.getElementById('save-project-btn')?.addEventListener('click', openSaveProjectModal);
+    document.getElementById('save-project-confirm-btn')?.addEventListener('click', () => {
+        const name = document.getElementById('save-project-name')?.value.trim();
+        if (name) saveProject(name);
+    });
     document.getElementById('open-project-btn')?.addEventListener('click', openProjectModal);
     document.querySelectorAll('[data-close-project]').forEach(el => el.addEventListener('click', closeProjectModal));
+    document.querySelectorAll('[data-close-save-project]').forEach(el => el.addEventListener('click', closeSaveProjectModal));
+    document.getElementById('save-project-name')?.addEventListener('input', updateSaveProjectAvailability);
 }
 
-async function saveProject() {
-    if (!audioFile || visualItems.length === 0) {
-        showToast('Select audio and at least one visual before saving.', 'error');
-        return;
-    }
-    const requestedName = window.prompt('Project name', currentProjectName || audioFile.name.replace(/\.[^.]+$/, ''));
-    if (requestedName === null) return;
-    const name = requestedName.trim() || 'Untitled Project';
+function openSaveProjectModal() {
+    const modal = document.getElementById('save-project-modal');
+    const input = document.getElementById('save-project-name');
+    const fallback = audioFile ? audioFile.name.replace(/\.[^.]+$/, '') : 'Untitled Project';
+    input.value = currentProjectName || fallback;
+    modal.hidden = false;
+    updateSaveProjectAvailability();
+    if (audioFile && visualItems.length) input.select();
+}
+
+function closeSaveProjectModal() {
+    const modal = document.getElementById('save-project-modal');
+    if (modal) modal.hidden = true;
+}
+
+function updateSaveProjectAvailability() {
+    const button = document.getElementById('save-project-confirm-btn');
+    const requirement = document.getElementById('save-project-requirement');
+    const name = document.getElementById('save-project-name')?.value.trim();
+    const ready = Boolean(audioFile && visualItems.length && name);
+    if (button) button.disabled = !ready;
+    if (requirement) requirement.textContent = !audioFile
+        ? 'Add an audio track and at least one artwork file to save.'
+        : !visualItems.length
+            ? 'Add at least one artwork file to save this project.'
+            : !name
+                ? 'Enter a project name to continue.'
+                : 'Your audio, artwork and settings will be saved on this device.';
+}
+
+async function saveProject(name) {
+    if (!audioFile || visualItems.length === 0 || !name) return;
     const button = document.getElementById('save-project-btn');
     button.disabled = true;
     button.textContent = 'Saving…';
+    const confirmButton = document.getElementById('save-project-confirm-btn');
+    confirmButton.disabled = true;
+    confirmButton.textContent = 'Saving…';
 
     const manifest = {
         id: currentProjectId,
@@ -637,6 +670,7 @@ async function saveProject() {
         currentProjectName = data.name;
         const projectTitle = document.getElementById('current-project-name');
         if (projectTitle) projectTitle.textContent = data.name;
+        closeSaveProjectModal();
         fetch('/projects').then(response => response.json()).then(renderProjectRail).catch(() => {});
         showToast(`Project saved: ${data.name}`, 'success');
     } catch (error) {
@@ -644,6 +678,8 @@ async function saveProject() {
     } finally {
         button.disabled = false;
         button.textContent = 'Save project';
+        confirmButton.textContent = 'Save project';
+        updateSaveProjectAvailability();
     }
 }
 
@@ -792,6 +828,7 @@ function updateRenderBtn() {
     if (dockSummary) dockSummary.textContent = summaryText;
     const dockTitle = document.getElementById('dock-status-title');
     if (dockTitle) dockTitle.textContent = audioFile && visualItems.length ? 'Ready to create' : 'Add your media to begin';
+    updateSaveProjectAvailability();
 }
 
 // ── Core Logic ─────────────────────────────────────────────────────────────
