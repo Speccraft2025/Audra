@@ -97,6 +97,32 @@ document.addEventListener('DOMContentLoaded', () => {
     initLyricsModal();
     initProjectControls();
     initLicensePanel();
+    fetch('/projects').then(response => response.json()).then(renderProjectRail).catch(() => {});
+
+    ['projects-nav-btn', 'rail-projects-btn', 'rail-open-project-btn'].forEach(id => {
+        const control = document.getElementById(id);
+        if (control) control.addEventListener('click', openProjectModal);
+    });
+    document.querySelectorAll('.upload-card[role="button"]').forEach(card => {
+        card.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                card.click();
+            }
+        });
+    });
+    const addAssets = document.querySelector('.asset-drop-hint');
+    if (addAssets) {
+        addAssets.tabIndex = 0;
+        addAssets.setAttribute('role', 'button');
+        addAssets.addEventListener('click', openVisualPicker);
+        addAssets.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openVisualPicker();
+            }
+        });
+    }
     
     const renderBtn = document.getElementById('renderBtn');
     if (renderBtn) {
@@ -123,18 +149,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initMultiToggle(selector, callback) {
     const btns = document.querySelectorAll(`${selector} .toggle-btn`);
+    btns.forEach(btn => btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false'));
     btns.forEach(btn => {
         btn.addEventListener('click', () => {
             btn.classList.toggle('active');
-            const activeValues = Array.from(document.querySelectorAll(`${selector} .toggle-btn.active`))
-                                     .map(b => b.dataset.value);
-            
-            // Enforce at least one selection
+            const activeValues = Array.from(btns).filter(option => option.classList.contains('active'));
+            // Keep at least one choice selected in each group.
             if (activeValues.length === 0) {
                 btn.classList.add('active');
                 return;
             }
-            callback(activeValues);
+            btns.forEach(option => option.setAttribute('aria-pressed', option.classList.contains('active') ? 'true' : 'false'));
+            callback(activeValues.map(option => option.dataset.value));
             updateRenderBtn();
         });
     });
@@ -359,18 +385,29 @@ function renderContentEditors() {
               <label>Animation / effects preset
                 <select class="v2-select content-preset">${presetOptionsHtml(item.preset)}</select>
               </label>
-              <label>Effect intensity
-                <select class="v2-select content-intensity">
-                  <option value="low"${item.intensity === 'low' ? ' selected' : ''}>Low</option>
-                  <option value="medium"${item.intensity === 'medium' ? ' selected' : ''}>Medium</option>
-                  <option value="high"${item.intensity === 'high' ? ' selected' : ''}>High</option>
-                </select>
-              </label>
+              <div class="intensity-control">
+                <label class="intensity-label" for="intensity-${item.id}">Effect intensity</label>
+                <div class="intensity-dial-wrap">
+                  <input class="intensity-dial content-intensity" id="intensity-${item.id}" type="range" min="0" max="2" step="1" value="${item.intensity === 'low' ? 0 : item.intensity === 'high' ? 2 : 1}" aria-label="Effect intensity" />
+                  <span class="intensity-dial-face" aria-hidden="true"><i></i></span>
+                  <span class="intensity-readout" aria-live="polite">${item.intensity}</span>
+                </div>
+                <div class="intensity-scale" aria-hidden="true"><span>LOW</span><span>MID</span><span>HIGH</span></div>
+              </div>
             </div>`;
 
         editor.querySelector('.content-caption').addEventListener('input', e => item.caption = e.target.value);
         editor.querySelector('.content-preset').addEventListener('change', e => item.preset = e.target.value);
-        editor.querySelector('.content-intensity').addEventListener('change', e => item.intensity = e.target.value);
+        const intensityDial = editor.querySelector('.content-intensity');
+        const intensityReadout = editor.querySelector('.intensity-readout');
+        const intensityValues = ['low', 'medium', 'high'];
+        const syncIntensity = () => {
+            item.intensity = intensityValues[Number(intensityDial.value)];
+            intensityReadout.textContent = item.intensity;
+            intensityDial.parentElement.style.setProperty('--dial-angle', `${-135 + Number(intensityDial.value) * 135}deg`);
+        };
+        syncIntensity();
+        intensityDial.addEventListener('input', syncIntensity);
         editor.querySelector('.lyrics-open-btn').addEventListener('click', () => openLyricsModal(item.id));
         editor.querySelector('.lyrics-enable').addEventListener('change', e => {
             item.lyricsEnabled = e.target.checked;
@@ -416,6 +453,7 @@ function readAudioDuration(file) {
         clipStart = Math.min(clipStart, Math.max(0, audioDuration - 30));
         URL.revokeObjectURL(url);
         updateClipRange();
+        updateRenderBtn();
     };
     audio.onerror = () => URL.revokeObjectURL(url);
     audio.src = url;
@@ -430,6 +468,7 @@ function updateClipRange() {
     range.max = String(Math.max(0, audioDuration - 30));
     range.value = String(Math.min(clipStart, Number(range.max)));
     range.disabled = audioDuration <= 30;
+    range.style.setProperty('--range-progress', `${Number(range.max) > 0 ? (Number(range.value) / Number(range.max)) * 100 : 0}%`);
     label.textContent = `${formatTime(Number(range.value))} – ${formatTime(Math.min(audioDuration || 30, Number(range.value) + 30))}`;
 }
 
@@ -596,12 +635,15 @@ async function saveProject() {
         if (!response.ok) throw new Error(data.error || 'Project could not be saved.');
         currentProjectId = data.id;
         currentProjectName = data.name;
+        const projectTitle = document.getElementById('current-project-name');
+        if (projectTitle) projectTitle.textContent = data.name;
+        fetch('/projects').then(response => response.json()).then(renderProjectRail).catch(() => {});
         showToast(`Project saved: ${data.name}`, 'success');
     } catch (error) {
         showToast(error.message, 'error');
     } finally {
         button.disabled = false;
-        button.textContent = 'Save Project';
+        button.textContent = 'Save project';
     }
 }
 
@@ -613,6 +655,7 @@ async function openProjectModal() {
     try {
         const response = await fetch('/projects');
         const projects = await response.json();
+        renderProjectRail(projects);
         if (!projects.length) {
             list.textContent = 'No saved projects yet.';
             return;
@@ -629,6 +672,35 @@ async function openProjectModal() {
     } catch (error) {
         list.textContent = 'Projects could not be loaded.';
     }
+}
+
+function renderProjectRail(projects) {
+    const rail = document.getElementById('rail-project-preview');
+    if (!rail) return;
+    rail.replaceChildren();
+    if (!projects.length) {
+        rail.innerHTML = '<span>▱</span><strong>Your saved work</strong><small>Open a project to pick up where you left off.</small><button class="rail-action" id="rail-open-project-btn" type="button">Open projects</button>';
+        document.getElementById('rail-open-project-btn')?.addEventListener('click', openProjectModal);
+        return;
+    }
+    projects.slice(0, 3).forEach(project => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'rail-project-item';
+        const title = document.createElement('strong');
+        title.textContent = project.name;
+        const meta = document.createElement('small');
+        meta.textContent = `${project.visual_count} visual${project.visual_count === 1 ? '' : 's'} · Open project`;
+        button.append(title, meta);
+        button.addEventListener('click', () => loadProject(project.id));
+        rail.appendChild(button);
+    });
+    const allButton = document.createElement('button');
+    allButton.type = 'button';
+    allButton.className = 'rail-action';
+    allButton.textContent = 'All projects →';
+    allButton.addEventListener('click', openProjectModal);
+    rail.appendChild(allButton);
 }
 
 function closeProjectModal() {
@@ -670,6 +742,8 @@ async function loadProject(projectId) {
         clipStart = Number(project.clip_start) || 0;
         currentProjectId = project.id;
         currentProjectName = project.name;
+        const projectTitle = document.getElementById('current-project-name');
+        if (projectTitle) projectTitle.textContent = project.name;
         applyToggleState('#format-toggle', selectedFormats);
         applyToggleState('#duration-toggle', selectedDurations);
         document.getElementById('audio-filename').textContent = truncate(audioFile.name, 25);
@@ -692,7 +766,9 @@ function projectAssetUrl(projectId, asset) {
 
 function applyToggleState(selector, values) {
     document.querySelectorAll(`${selector} .toggle-btn`).forEach(button => {
-        button.classList.toggle('active', values.includes(button.dataset.value));
+        const active = values.includes(button.dataset.value);
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
 }
 
@@ -702,11 +778,20 @@ function updateRenderBtn() {
     if (audioFile && visualItems.length > 0 && selectedFormats.length > 0 && selectedDurations.length > 0) {
         btn.disabled = false;
         const count = visualItems.length * selectedFormats.length * selectedDurations.length;
-        hint.textContent = `Ready: ${count} content piece${count === 1 ? '' : 's'} will be rendered`;
+        hint.textContent = `Ready to create ${count} video${count === 1 ? '' : 's'}.`;
     } else {
         btn.disabled = true;
-        hint.textContent = 'Complete Step 01 and select at least one format/duration';
+        hint.textContent = 'Add your audio and artwork to get started.';
     }
+    const durations = selectedDurations.map(value => value === 'full' ? 'Full track' : '30 seconds');
+    const formatLabels = selectedFormats.map(value => value === 'youtube' ? 'Landscape' : 'Portrait');
+    const summary = document.getElementById('render-summary-text');
+    const summaryText = `${formatLabels.join(' + ') || 'Choose orientation'} · ${durations.join(' + ') || 'Choose duration'}${audioDuration ? ` · ${formatTime(audioDuration)}` : ''}`;
+    if (summary) summary.textContent = summaryText;
+    const dockSummary = document.getElementById('dock-summary-text');
+    if (dockSummary) dockSummary.textContent = summaryText;
+    const dockTitle = document.getElementById('dock-status-title');
+    if (dockTitle) dockTitle.textContent = audioFile && visualItems.length ? 'Ready to create' : 'Add your media to begin';
 }
 
 // ── Core Logic ─────────────────────────────────────────────────────────────
@@ -716,7 +801,15 @@ async function submitRender() {
 
     const btn = document.getElementById('renderBtn');
     btn.disabled = true;
-    btn.textContent = 'Initializing...';
+    btn.innerHTML = '<span class="render-btn-inner"><span class="button-spinner" aria-hidden="true"></span>Preparing…</span>';
+    document.getElementById('dock-status-title').textContent = 'Preparing your video';
+    document.getElementById('renderHint').textContent = 'Preparing your render…';
+    document.getElementById('render-stage').textContent = 'Sending your media to the visual engine';
+    document.getElementById('render-progress-container').style.display = 'block';
+    document.getElementById('render-progress-fill').style.width = '3%';
+    document.getElementById('render-percent').textContent = '…';
+    document.getElementById('render-percent').hidden = false;
+    document.querySelector('.render-dock')?.classList.add('is-rendering');
 
     const formData = new FormData();
     formData.append('audio_0', audioFile);
@@ -744,18 +837,34 @@ async function submitRender() {
             showToast(`🚀 ${data.jobs.length} renders started...`, 'success');
 
             document.getElementById('render-progress-container').style.display = 'block';
-            document.getElementById('renderHint').textContent = 'Rendering v2 Variants...';
-            btn.textContent = 'Processing...';
+            document.getElementById('renderHint').textContent = 'Rendering your video…';
+            document.getElementById('dock-status-title').textContent = 'Rendering your video';
+            document.getElementById('render-stage').textContent = 'Warming up the visual engine';
+            document.getElementById('render-percent').hidden = false;
+            document.querySelector('.render-dock')?.classList.add('is-rendering');
+            btn.innerHTML = '<span class="render-btn-inner"><span class="button-spinner" aria-hidden="true"></span>Rendering…</span>';
         } else {
             // Rejected before any job was queued (tier gate, unreadable media).
             showToast(data.error || data.message || 'Render request was rejected.', 'error');
+            document.getElementById('render-progress-container').style.display = 'none';
+            document.getElementById('render-percent').hidden = true;
+            document.querySelector('.render-dock')?.classList.remove('is-rendering');
+            document.getElementById('dock-status-title').textContent = 'Ready to create';
+            document.getElementById('render-stage').textContent = 'Your setup is ready when you are.';
             btn.disabled = false;
-            btn.textContent = 'Initialize v2 Render';
+            btn.innerHTML = '<span class="render-btn-inner"><svg width="15" height="15" viewBox="0 0 22 22" fill="none" aria-hidden="true"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>Create video <b>→</b></span>';
+            updateRenderBtn();
         }
     } catch (err) {
         showToast('❌ Server error', 'error');
+        document.getElementById('render-progress-container').style.display = 'none';
+        document.getElementById('render-percent').hidden = true;
+        document.querySelector('.render-dock')?.classList.remove('is-rendering');
+        document.getElementById('dock-status-title').textContent = 'Render could not start';
+        document.getElementById('render-stage').textContent = 'Check the app connection and try again';
         btn.disabled = false;
-        btn.textContent = 'Initialize v2 Render';
+        btn.innerHTML = '<span class="render-btn-inner"><svg width="15" height="15" viewBox="0 0 22 22" fill="none" aria-hidden="true"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>Create video <b>→</b></span>';
+        updateRenderBtn();
     }
 }
 
@@ -772,6 +881,9 @@ function startPolling() {
             const totalProgress = relevantJobs.reduce((acc, j) => acc + (j.progress || 0), 0);
             const avgProgress = totalProgress / relevantJobs.length;
             document.getElementById('render-progress-fill').style.width = `${avgProgress}%`;
+            const percent = Math.round(avgProgress);
+            document.getElementById('render-percent').textContent = `${percent}%`;
+            document.getElementById('render-stage').textContent = renderStageFor(percent);
 
             const allDone = relevantJobs.every(j => j.status === 'completed' || j.status === 'failed');
 
@@ -784,11 +896,18 @@ function startPolling() {
 }
 
 function finishRender(jobs) {
-    showToast('🏆 All variants ready!', 'success');
-    document.getElementById('renderHint').textContent = 'Batch Generation Complete';
+    const completed = jobs.filter(job => job.status === 'completed').length;
+    const failed = jobs.length - completed;
+    showToast(failed ? `${completed} ready · ${failed} failed` : 'All videos are ready!', failed ? 'error' : 'success');
+    document.getElementById('renderHint').textContent = failed ? `${completed} ready · ${failed} need another try` : 'Your videos are ready to watch.';
+    document.getElementById('dock-status-title').textContent = failed && !completed ? 'Render needs attention' : 'Your videos are ready';
+    document.getElementById('render-stage').textContent = failed && !completed ? 'Check the export details below' : 'Finished and ready to download';
+    document.getElementById('render-percent').textContent = completed ? '100%' : '—';
+    document.querySelector('.render-dock')?.classList.remove('is-rendering');
     
     const btn = document.getElementById('renderBtn');
-    btn.textContent = 'Render Finished';
+    btn.disabled = false;
+    btn.innerHTML = '<span class="render-btn-inner"><svg width="15" height="15" viewBox="0 0 22 22" fill="none" aria-hidden="true"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>Render again <b>→</b></span>';
     
     const list = document.getElementById('outputList');
     list.innerHTML = `<div class="output-header">${audioFile.name} [v2 Variants]</div>`;
@@ -816,6 +935,7 @@ function finishRender(jobs) {
     });
 
     const completedFiles = jobs.filter(j => j.status === 'completed').map(j => j.output);
+    renderExportRail(jobs.filter(j => j.status === 'completed'));
     if (completedFiles.length > 1) {
         const downloadAllBtn = document.createElement('button');
         downloadAllBtn.className = 'dl-btn primary download-all-btn';
@@ -833,6 +953,39 @@ function finishRender(jobs) {
     list.appendChild(actionGrid);
     document.getElementById('step-gallery').style.display = 'block';
     list.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderStageFor(progress) {
+    if (progress < 8) return 'Warming up the visual engine';
+    if (progress < 30) return 'Reading the rhythm and audio peaks';
+    if (progress < 58) return 'Building scenes to match your track';
+    if (progress < 84) return 'Composing motion and color';
+    return 'Polishing the final video';
+}
+
+function renderExportRail(jobs) {
+    const rail = document.getElementById('rail-exports-preview');
+    if (!rail || !jobs.length) return;
+    rail.replaceChildren();
+    jobs.slice(0, 3).forEach(job => {
+        const item = document.createElement('div');
+        item.className = 'rail-export-item';
+        const text = document.createElement('span');
+        const title = document.createElement('strong');
+        title.textContent = job.output || 'Rendered video';
+        const meta = document.createElement('small');
+        const platform = job.platform === 'portrait' ? 'Shorts / Reels · 9:16' : 'YouTube · 16:9';
+        meta.textContent = `${platform} · ${job.duration_mode === '30s' ? '0:30' : 'Ready'}`;
+        text.append(title, meta);
+        const download = document.createElement('button');
+        download.type = 'button';
+        download.className = 'rail-download';
+        download.textContent = '↓';
+        download.setAttribute('aria-label', `Download ${job.output}`);
+        download.addEventListener('click', () => downloadFile(`/download/${encodeURIComponent(job.output)}`, job.output, download));
+        item.append(text, download);
+        rail.appendChild(item);
+    });
 }
 
 async function downloadAll(filenames, btn) {

@@ -3,230 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Audra Workspace — Beat-to-Video Console</title>
-  <meta name="description" content="Automated platform-ready renders for beatmakers and music producers." />
+  <title>Audra Studio — Audio to Video</title>
+  <meta name="description" content="Give your audio a visual. Turn your track and artwork into a video, ready to share." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
-  <link rel="stylesheet" href="/static/style.css?v=2.3" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
+  <link rel="stylesheet" href="/static/style.css?v=6.0" />
 </head>
-<body>
+<body class="studio-app">
+  <div class="bg-orbs" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
-  <!-- ── Ambient Background ── -->
-  <div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-
-  <!-- ── Header ── -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="logo">
-        <a href="/workspace" style="text-decoration: none;">
-          <div class="logo-asset">
-            <img src="/static/assets/logo.png" alt="Audra Technology">
-          </div>
-        </a>
-      </div>
-      <nav class="nav-links">
-        <a href="/" class="nav-link" id="home-link">Return to Site</a>
-      </nav>
+  <header class="studio-topbar">
+    <a class="studio-brand" href="/workspace" aria-label="Audra Studio home"><span class="studio-wordmark">audra</span><span class="brand-divider"></span><span class="project-name-block"><strong id="current-project-name">Untitled Project</strong><small>Audio to Video</small></span></a>
+    <div class="topbar-actions">
+      <span class="save-state"><i></i> Workspace ready</span>
+      <button class="topbar-button" id="open-project-btn" type="button">Open project</button>
+      <button class="topbar-button primary" id="save-project-btn" type="button">Save project</button>
+      <a class="avatar" href="/" id="home-link" aria-label="Return to Audra site">A</a>
     </div>
   </header>
 
-  <!-- ── Main Workspace ── -->
-  <main class="main">
+  <div class="studio-layout">
+    <aside class="studio-sidebar" aria-label="Workspace navigation">
+      <nav class="studio-nav">
+        <a class="studio-nav-item active" href="#workspace"><span class="nav-symbol">✦</span><span><strong>Create</strong><small>Make a new video</small></span></a>
+        <button class="studio-nav-item" id="projects-nav-btn" type="button"><span class="nav-symbol">▱</span><span><strong>Projects</strong><small>Your saved work</small></span></button>
+        <a class="studio-nav-item" href="#step-gallery"><span class="nav-symbol">⇩</span><span><strong>Exports</strong><small>Rendered videos</small></span></a>
+      </nav>
+      <div class="sidebar-note"><span class="note-mark">A</span><strong>Audio to Video</strong><p>Give your audio a visual.</p></div>
+    </aside>
 
-    <!-- ── Interactive Rendering Workspace ── -->
-    <section class="workspace-section" id="workspace" style="margin-top: 0;">
-      <div class="workspace-card-wrapper">
-        <div class="workspace-card-header">
-          <div class="workspace-header-title">Audra Rendering Core Workspace</div>
-          <div class="project-toolbar">
-            <button class="project-toolbar-btn" id="open-project-btn" type="button">Open Project</button>
-            <button class="project-toolbar-btn primary" id="save-project-btn" type="button">Save Project</button>
-            <div class="workspace-header-badge">Control Console</div>
-          </div>
-        </div>
-        
-        <div class="workspace-card-body">
-          <!-- ── Step 1: Media Ingestion ── -->
-          <section class="section" id="step-upload">
-            <div class="section-heading-row">
-              <div class="step-label"><span class="step-num">01</span> Upload Media</div>
+    <main class="studio-main" id="workspace">
+      <div class="studio-content-grid">
+        <div class="studio-primary-column">
+          <section class="studio-intro" aria-label="Audra control deck">
+            <div class="eyebrow">NEW VIDEO</div>
+            <h1>Create a video from your track.</h1>
+            <p>Choose an output, add your audio and artwork, then render.</p>
+          </section>
+
+          <ol class="workflow-steps" aria-label="Video creation steps">
+            <li class="current"><span>01</span><div><strong>Video settings</strong><small>Orientation and duration</small></div></li>
+            <li><span>02</span><div><strong>Media</strong><small>Audio and artwork</small></div></li>
+            <li><span>03</span><div><strong>Render</strong><small>Create and download</small></div></li>
+          </ol>
+
+          <section class="studio-panel settings-panel" id="step-config">
+            <div class="panel-heading compact-heading"><div class="panel-heading-copy"><div class="panel-title-line"><span class="step-num">01</span><h2>Format &amp; length</h2></div><p>Set the output before loading your source files.</p></div></div>
+            <div class="settings-columns">
+              <div class="config-group format-control"><label class="config-label">Orientation</label><div class="toggle-group" id="format-toggle"><button class="toggle-btn active" data-value="youtube" type="button"><span class="format-glyph landscape">▶</span>Landscape · 16:9</button><button class="toggle-btn" data-value="portrait" type="button"><span class="format-glyph portrait"></span>Portrait · 9:16</button></div></div>
+              <div class="config-group duration-control"><label class="config-label">Duration</label><div class="toggle-group" id="duration-toggle"><button class="toggle-btn active" data-value="full" type="button"><span class="clock-glyph">◷</span>Full track</button><button class="toggle-btn" data-value="30s" type="button">30 seconds</button></div></div>
+            </div>
+            <div class="clip-range-panel" id="clip-range-panel" hidden><div class="clip-range-head"><label class="config-label" for="clip-start-range">30-second audio section</label><span id="clip-range-label">00:00 – 00:30</span></div><input type="range" id="clip-start-range" min="0" max="0" value="0" step="0.1" /><p class="config-hint">Choose where the 30-second version begins.</p></div>
+            <div class="settings-summary"><span class="summary-mark">◈</span><span><strong>Your render</strong><small id="render-summary-text">Landscape · Full track</small></span></div>
+          </section>
+
+          <section class="studio-panel media-panel" id="step-upload">
+            <div class="panel-heading">
+              <div class="panel-heading-copy"><div class="panel-title-line"><span class="step-num">02</span><h2>Source lanes</h2></div><p>Load a track and the image or loop it should drive.</p></div>
               <button class="add-content-btn" id="add-content-btn" type="button">＋ Add another</button>
             </div>
-            <p class="section-sub">Drop your beat and artwork below.</p>
             <div class="upload-zone-v2">
-              <div class="upload-card" id="audio-upload">
-                <div class="upload-icon">🎵</div>
-                <div class="upload-text">Select Audio</div>
-                <div class="upload-filename" id="audio-filename">No file selected</div>
+              <div class="upload-card audio-upload-card" id="audio-upload" role="button" tabindex="0" aria-label="Choose audio file">
+                <div class="upload-card-heading"><span class="upload-icon">♫</span><span><strong class="upload-text">Your audio</strong><small class="upload-hint">MP3, WAV, AIFF or M4A</small></span></div>
+                <div class="file-summary"><span class="file-symbol">♫</span><span class="file-summary-text"><strong id="audio-filename">No file selected</strong><small>Audio file</small></span><span class="file-action">Browse</span></div>
               </div>
-              <div class="upload-card" id="image-upload">
-                <div class="upload-icon">🖼️</div>
-                <div class="upload-text">Select Artwork</div>
-                <div class="upload-hint" id="image-hint">Image, GIF or video loop</div>
-                <div class="upload-filename" id="image-filename">No file selected</div>
+              <div class="upload-card artwork-upload-card" id="image-upload" role="button" tabindex="0" aria-label="Choose artwork or video loop">
+                <div class="upload-card-heading"><span class="upload-icon">▧</span><span><strong class="upload-text">Artwork / motion</strong><small class="upload-hint" id="image-hint">Image or video loop</small></span></div>
+                <div class="file-summary"><span class="file-symbol artwork-symbol">▧</span><span class="file-summary-text"><strong id="image-filename">No file selected</strong><small>Image, GIF or video loop</small></span><span class="file-action">Browse</span></div>
               </div>
             </div>
             <div class="content-editor-list" id="content-editor-list"></div>
+            <div class="asset-drop-hint"><span>＋</span><div><strong>Add more assets</strong><small>Add another image or video loop if you like.</small></div><small class="optional-tag">OPTIONAL</small></div>
           </section>
 
-          <!-- ── Step 2: Format & Preset ── -->
-          <section class="section" id="step-config">
-            <div class="step-label"><span class="step-num">02</span> Visual Configuration</div>
-            
-            <div class="config-grid">
-              <!-- Platform -->
-              <div class="config-group">
-                <label class="config-label">Output Format</label>
-                <div class="toggle-group" id="format-toggle">
-                  <button class="toggle-btn active" data-value="youtube">YouTube (16:9)</button>
-                  <button class="toggle-btn" data-value="portrait">Shorts/Reels (9:16)</button>
-                </div>
-              </div>
+          <section class="section license-panel" id="license-panel" style="display:none"><div class="step-label"><span class="step-num">★</span> License</div><div id="license-free-view" style="display:none"><p class="section-sub">Free tier — <span id="license-free-summary"></span>. Renders carry the “Made with Audra” mark.</p><div class="license-controls"><input type="text" class="v2-input" id="license-key-input" placeholder="Paste your Pro license key" autocomplete="off" spellcheck="false" /><button class="toggle-btn" id="license-activate-btn" type="button">Activate</button><a id="license-buy-link" href="#" target="_blank" rel="noopener" style="display:none">Get Audra Pro →</a></div><p class="config-hint" id="license-message"></p></div><div id="license-pro-view" style="display:none"><p class="section-sub">Pro active <span id="license-key-hint"></span> — all presets, no render cap, no Audra watermark.</p><button class="toggle-btn" id="license-deactivate-btn" type="button">Deactivate this machine</button></div></section>
 
-              <!-- Duration -->
-              <div class="config-row">
-                <div class="config-group">
-                  <label class="config-label">Render Duration</label>
-                  <div class="toggle-group" id="duration-toggle">
-                    <button class="toggle-btn active" data-value="full">Full Track</button>
-                    <button class="toggle-btn" data-value="30s">30s Clip</button>
-                  </div>
-                </div>
-              </div>
-              <div class="clip-range-panel" id="clip-range-panel" hidden>
-                <div class="clip-range-head">
-                  <label class="config-label" for="clip-start-range">30-second audio section</label>
-                  <span id="clip-range-label">00:00 – 00:30</span>
-                </div>
-                <input type="range" id="clip-start-range" min="0" max="0" value="0" step="0.1" />
-                <p class="config-hint">Move the slider to choose where the 30-second version begins.</p>
-              </div>
-            </div>
+          <section class="section outputs-section" id="step-gallery">
+            <div class="outputs-heading"><div><div class="eyebrow">RENDERED VIDEOS</div><h2>Recent exports</h2></div><span>Finished videos appear here</span></div>
+            <div id="system-dashboard" class="collapsible-panel"><details><summary><span class="health-dot">●</span> System health <small id="engine-version-tag">v2.0.0-simplified</small></summary><div class="system-metrics"><div><small>CPU usage</small><strong id="cpu-metric">0%</strong></div><div><small>Memory</small><strong id="mem-metric">0MB</strong></div><div><small>Disk free</small><strong id="disk-metric">0GB</strong></div><div><small>Queue</small><strong id="queue-metric">0 jobs</strong></div></div><div id="log-monitor"><div>ENGINE LOGS</div><div id="log-content">Initializing logs...</div></div></details></div>
+            <div class="output-list" id="outputList"><div class="empty-exports"><span>↗</span><strong>Your exports will show up here</strong><small>Render a video to preview and download it.</small></div></div>
           </section>
-
-          <!-- ── License / Pro Upgrade (shown only when licensing is enforced) ── -->
-          <section class="section" id="license-panel" style="display:none">
-            <div class="step-label"><span class="step-num">★</span> License</div>
-            <div id="license-free-view" style="display:none">
-              <p class="section-sub">Free tier — <span id="license-free-summary"></span>. Renders carry the "Made with Audra" mark.</p>
-              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                <input type="text" class="v2-input" id="license-key-input" placeholder="Paste your Pro license key" style="flex:1; min-width:220px;" autocomplete="off" spellcheck="false" />
-                <button class="toggle-btn" id="license-activate-btn" type="button">Activate</button>
-                <a id="license-buy-link" href="#" target="_blank" rel="noopener" style="display:none">Get Audra Pro →</a>
-              </div>
-              <p class="config-hint" id="license-message"></p>
-            </div>
-            <div id="license-pro-view" style="display:none">
-              <p class="section-sub">Pro active <span id="license-key-hint" style="opacity:0.6; font-family:'Space Mono',monospace;"></span> — all presets, no render cap, no Audra watermark.</p>
-              <button class="toggle-btn" id="license-deactivate-btn" type="button">Deactivate this machine</button>
-            </div>
-          </section>
-
-          <!-- ── Render Action ── -->
-          <section class="section render-section">
-            <button class="render-btn" id="renderBtn" disabled>
-              <div class="render-btn-inner">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>
-                Initialize v2 Render
-              </div>
-            </button>
-            <div class="render-info">
-              <p class="render-hint" id="renderHint">Complete Step 01 to begin</p>
-              <div class="render-progress-bar" id="render-progress-container" style="display:none">
-                <div class="render-progress-fill" id="render-progress-fill"></div>
-              </div>
-              <p class="render-eta" id="renderEta"></p>
-            </div>
-          </section>
-
-          <!-- ── Step 3: Output List ── -->
-          <section class="section" id="step-gallery" style="display:none">
-            <div class="step-label"><span class="step-num">03</span> Download Outputs</div>
-            
-            <!-- SYSTEM MONITORING DASHBOARD -->
-            <div id="system-dashboard" class="collapsible-panel" style="margin-top: 50px; border-top: 1px solid #333; padding-top: 20px;">
-                <div class="step-label" style="display: flex; align-items: center; gap: 10px;">
-                    <span style="color: #00ff00;">●</span> SYSTEM HEALTH <span id="engine-version-tag" style="font-size: 0.6rem; opacity: 0.5;">v2.0.0-simplified</span>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 15px;">
-                    <div class="metric-card">
-                        <div style="font-size: 0.7rem; color: #888;">CPU USAGE</div>
-                        <div id="cpu-metric" style="font-size: 1.2rem; font-family: 'Space Mono', monospace;">0%</div>
-                    </div>
-                    <div class="metric-card">
-                        <div style="font-size: 0.7rem; color: #888;">MEMORY</div>
-                        <div id="mem-metric" style="font-size: 1.2rem; font-family: 'Space Mono', monospace;">0MB</div>
-                    </div>
-                    <div class="metric-card">
-                        <div style="font-size: 0.7rem; color: #888;">DISK FREE</div>
-                        <div id="disk-metric" style="font-size: 1.2rem; font-family: 'Space Mono', monospace;">0GB</div>
-                    </div>
-                    <div class="metric-card">
-                        <div style="font-size: 0.7rem; color: #888;">QUEUE</div>
-                        <div id="queue-metric" style="font-size: 1.2rem; font-family: 'Space Mono', monospace;">0 jobs</div>
-                    </div>
-                </div>
-
-                <div id="log-monitor" style="margin-top: 20px; background: #0a0a0a; border: 1px solid #222; padding: 10px; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #aaa; max-height: 150px; overflow-y: auto;">
-                    <div style="color: #444; margin-bottom: 5px; border-bottom: 1px solid #222; padding-bottom: 5px;">ENGINE_LOGS</div>
-                    <div id="log-content">Initializing logs...</div>
-                </div>
-            </div>
-
-            <div class="output-list" id="outputList">
-              <!-- Rendered results grouped by beat title go here -->
-            </div>
-          </section>
+          <p class="privacy-note">Your files stay on this device until you choose to export.</p>
         </div>
-      </div>
-    </section>
 
-  </main>
-
-  <div class="lyrics-modal" id="lyrics-modal" hidden>
-    <div class="lyrics-modal-backdrop" data-close-lyrics></div>
-    <section class="lyrics-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="lyrics-modal-title">
-      <div class="lyrics-modal-head">
-        <div>
-          <div class="step-label" id="lyrics-modal-title">Sync Lyrics</div>
-          <p class="config-hint">Paste one lyric line per row. Start playback, then tap Space when each line should appear.</p>
-        </div>
-        <button class="content-remove-btn" type="button" data-close-lyrics>Close</button>
+        <aside class="studio-rail" aria-label="Projects and exports">
+          <section class="rail-card"><div class="rail-heading"><h2>Saved projects</h2><button type="button" id="rail-projects-btn">View all →</button></div><div class="rail-empty" id="rail-project-preview"><span>▱</span><strong>Your saved work</strong><small>Open a project to pick up where you left off.</small><button class="rail-action" id="rail-open-project-btn" type="button">Open projects</button></div></section>
+          <section class="rail-card export-rail"><div class="rail-heading"><h2>Recent exports</h2><a href="#step-gallery">View all →</a></div><div class="rail-empty" id="rail-exports-preview"><span>⇩</span><strong>Nothing rendered yet</strong><small>Your finished videos will appear here.</small></div></section>
+          <div class="rail-tip"><span>✦</span><strong>Audio to Video</strong><p>Give your audio a visual.</p></div>
+        </aside>
       </div>
-      <textarea class="v2-input lyrics-textarea" id="lyrics-textarea" placeholder="First lyric line&#10;Second lyric line&#10;Third lyric line"></textarea>
-      <div class="lyrics-sync-status" id="lyrics-sync-status">Paste lyrics to begin.</div>
-      <div class="lyrics-modal-actions">
-        <button class="toggle-btn" id="lyrics-start-btn" type="button">▶ Start syncing</button>
-        <button class="toggle-btn active" id="lyrics-save-btn" type="button" disabled>Save synced lyrics</button>
-      </div>
-    </section>
+    </main>
   </div>
 
-  <div class="lyrics-modal" id="project-modal" hidden>
-    <div class="lyrics-modal-backdrop" data-close-project></div>
-    <section class="lyrics-modal-dialog project-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
-      <div class="lyrics-modal-head">
-        <div>
-          <div class="step-label" id="project-modal-title">Open Project</div>
-          <p class="config-hint">Reopen a saved project, make changes, and render new versions.</p>
-        </div>
-        <button class="content-remove-btn" type="button" data-close-project>Close</button>
-      </div>
-      <div class="project-list" id="project-list">Loading projects…</div>
-    </section>
-  </div>
+  <footer class="render-dock" aria-label="Create video">
+    <div class="dock-summary"><span class="summary-mark">◈</span><span><strong id="dock-status-title">Ready to create</strong><small id="dock-summary-text">YouTube · Full track</small></span></div>
+    <div class="dock-progress"><div class="render-live-status"><span class="render-orbit" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><p class="render-hint" id="renderHint">Add your audio and artwork to get started.</p><p class="render-stage" id="render-stage">Your setup is ready when you are.</p></div><strong class="render-percent" id="render-percent" hidden>0%</strong></div><div class="render-progress-bar" id="render-progress-container" style="display:none"><div class="render-progress-fill" id="render-progress-fill"></div></div></div>
+    <button class="render-btn" id="renderBtn" type="button" disabled><span class="render-btn-inner"><svg width="15" height="15" viewBox="0 0 22 22" fill="none" aria-hidden="true"><polygon points="5,3 19,11 5,19" fill="currentColor"/></svg>Create video <b>→</b></span></button>
+  </footer>
 
-  <!-- ── Hidden file inputs ── -->
-  <input type="file" id="globalAudioInput" accept=".mp3,.wav,.aiff,.m4a" multiple style="display:none" />
-  <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" multiple style="display:none" />
+  <div class="lyrics-modal" id="lyrics-modal" hidden><div class="lyrics-modal-backdrop" data-close-lyrics></div><section class="lyrics-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="lyrics-modal-title"><div class="lyrics-modal-head"><div><div class="step-label" id="lyrics-modal-title">Sync Lyrics</div><p class="config-hint">Paste one lyric line per row. Start playback, then tap Space when each line should appear.</p></div><button class="content-remove-btn" type="button" data-close-lyrics>Close</button></div><textarea class="v2-input lyrics-textarea" id="lyrics-textarea" placeholder="First lyric line&#10;Second lyric line&#10;Third lyric line"></textarea><div class="lyrics-sync-status" id="lyrics-sync-status">Paste lyrics to begin.</div><div class="lyrics-modal-actions"><button class="toggle-btn" id="lyrics-start-btn" type="button">▶ Start syncing</button><button class="toggle-btn active" id="lyrics-save-btn" type="button" disabled>Save synced lyrics</button></div></section></div>
+  <div class="lyrics-modal" id="project-modal" hidden><div class="lyrics-modal-backdrop" data-close-project></div><section class="lyrics-modal-dialog project-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="project-modal-title"><div class="lyrics-modal-head"><div><div class="step-label" id="project-modal-title">Open Project</div><p class="config-hint">Reopen a saved project, make changes, and render new versions.</p></div><button class="content-remove-btn" type="button" data-close-project>Close</button></div><div class="project-list" id="project-list">Loading projects…</div></section></div>
 
-  <script src="/static/app.js?v=2.4"></script>
+  <input type="file" id="globalAudioInput" accept=".mp3,.wav,.aiff,.m4a" multiple class="native-file-input" aria-label="Choose audio files" />
+  <input type="file" id="globalImageInput" accept=".jpg,.jpeg,.png,.gif,.webp" multiple class="native-file-input" aria-label="Choose artwork or video files" />
+  <script src="/static/app.js?v=4.0"></script>
 </body>
 </html>
