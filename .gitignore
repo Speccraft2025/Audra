@@ -9,12 +9,34 @@ audra.log
 # System
 .DS_Store
 
+# Local license activation (per-machine, never commit)
+license.json
+
 # Audra Data (Keep directories, ignore contents)
 input/*
 !input/.gitkeep
 output/*
 !output/.gitkeep
+projects/
 
 # IDEs
 .vscode/
 .idea/
+*.log
+test_render*.mp4
+
+# Desktop packaging output (PyInstaller)
+build/
+dist/
+bin/
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+src-tauri/binaries/*
+!src-tauri/binaries/.gitkeep
+
+# Local agent/tooling config (session-specific, not shared)
+.claude/settings.local.json
+
+# Local Netlify folder
+.netlify

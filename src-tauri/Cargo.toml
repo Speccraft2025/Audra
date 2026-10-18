@@ -1,0 +1,17 @@
+[package]
+name = "audra-desktop"
+version = "2.0.1"
+description = "Audra local beat-to-video desktop application"
+authors = ["Audra Technology"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

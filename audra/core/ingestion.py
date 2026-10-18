@@ -28,6 +28,18 @@ class IngestionLayer:
         return Path(filename).suffix.lower() in config.ALLOWED_EXTENSIONS_IMAGE
 
     @staticmethod
+    def is_allowed_video(filename: str) -> bool:
+        return Path(filename).suffix.lower() in config.ALLOWED_EXTENSIONS_VIDEO
+
+    @staticmethod
+    def classify_visual(filename: str) -> str:
+        """Returns 'video' or 'image' for a background source upload."""
+        # Animated GIFs need the looping video-input path rather than image2's
+        # still-frame -loop option.
+        suffix = Path(filename).suffix.lower()
+        return "video" if IngestionLayer.is_allowed_video(filename) or suffix == '.gif' else "image"
+
+    @staticmethod
     def save_upload(file_storage, prefix: str) -> str:
         """Safe save with UUID prefix and sanitized name."""
         ext = Path(file_storage.filename).suffix

@@ -1,0 +1,32 @@
+# ── docker-compose.yml — Audra v2 SaaS Service Orchestration ──
+version: '3.8'
+
+services:
+  audra-saas-engine:
+    build:
+      context: ../..
+      dockerfile: packaging/saas/Dockerfile
+    container_name: audra_saas_engine
+    ports:
+      - "5050:5050"
+    volumes:
+      # Mount input & output directories to the host for persistence & direct downloads
+      - ../../input:/app/input
+      - ../../output:/app/output
+      # Mount logs to inspect server health externally
+      - ../../audra.log:/app/audra.log
+    environment:
+      - FLASK_ENV=production
+      
+      # SaaS Concurrency Limits (safeguard CPU threshold)
+      - AUDRA_CONCURRENCY_LIMIT=2
+      - AUDRA_MAX_FILE_SIZE_MB=100
+      - AUDRA_CPU_TARGET=80.0
+      - AUDRA_MEMORY_LIMIT_MB=2048
+      
+      # SaaS Security Configurations (parsed inside saas_auth.py)
+      - SAAS_AUTH_ENABLED=true
+      - SAAS_STRIPE_WEBHOOK_SECRET=whsec_yourstripewebhooksecretforvalidation
+      - SAAS_JWT_SECRET=supersecureandsignedtokensecretforaudrav2users
+      
+    restart: unless-stopped

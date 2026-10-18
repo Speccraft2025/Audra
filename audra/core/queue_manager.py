@@ -13,10 +13,22 @@ class QueueManager:
         self.jobs_lock = threading.Lock()
         self.semaphore = threading.Semaphore(config.CONCURRENCY_LIMIT)
         self.active_processes = {}  # {job_id: subprocess.Popen}
-        
+
+        # Free tier render cap tracking (process-lifetime counter; see config.FREE_TIER_RENDER_CAP)
+        self.free_tier_render_count = 0
+        self.free_tier_lock = threading.Lock()
+
         # Start Watchdog thread
         self.watchdog_thread = threading.Thread(target=self._watchdog_loop, daemon=True)
         self.watchdog_thread.start()
+
+    def can_render_free_tier(self):
+        with self.free_tier_lock:
+            return self.free_tier_render_count < config.FREE_TIER_RENDER_CAP
+
+    def record_free_tier_render(self):
+        with self.free_tier_lock:
+            self.free_tier_render_count += 1
 
     def add_job(self, job_data):
         with self.jobs_lock:
